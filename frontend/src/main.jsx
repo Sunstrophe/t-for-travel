@@ -6,19 +6,15 @@ import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout/>}>
-          <Route path="/" element={<Home />}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<Home />}></Route>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
