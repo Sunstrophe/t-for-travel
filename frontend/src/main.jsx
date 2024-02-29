@@ -4,7 +4,6 @@ import "./index.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
-import Development from "./pages/Development";
 
 function App() {
     return (
@@ -13,7 +12,6 @@ function App() {
                 <Route element={<Layout />}>
                     <Route path="/" element={<Home />}></Route>
                 </Route>
-                <Route path="/dev" element={<Development />}></Route>
             </Routes>
         </BrowserRouter>
     );
