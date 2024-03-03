@@ -1,75 +1,51 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, {useState} from "react"
+{/* import LoginFunction from "./LoginFunction";, modify code to expand the divs downwards only*/}
 
-function LoginMenu() {
-  const [isOpen, setOpen] = useState(false);
-  const menuRef = useRef();
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("click", handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [isOpen]);
-
-  const handleLoginClick = () => {
-    setOpen(!isOpen);
-  };
-
-  const closeLoginMenu = () => {
-    setOpen(false);
-  };
+const LoginMenu = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="relative">
-      <div
-        className={`absolute top-16 right-0 bg-gray-200 p-2 ${
-          isOpen ? "w-64 mr-2" : "w-16"
-        }`}
-        ref={menuRef}
-      >
-        {isOpen ? (
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="text"
-                className="mt-1 p-2 border w-full"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                type="password"
-                className="mt-1 p-2 border w-full"
-                placeholder="Enter your password"
-              />
-            </div>
-            <button
-              type="button"
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Login
-            </button>
-          </form>
-        ) : null}
-      </div>
-
-      <div className="mr-auto bold" onClick={handleLoginClick}>
-        <Link to="/">Login</Link>
+    <div className="py-2">
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="flex justify-between w-full"
+        >
+        <span>Login</span>
+        <svg
+          className="fill-ger-400 shrink-0 ml-8"
+          width="16"
+          height="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            y="7"
+            width="16"
+            height="2"
+            rx="1"
+            className={`transform origin-center transition duration-200 ease-out ${
+              menuOpen && "!rotate-180"
+            }`}
+          />
+          <rect
+            y="7"
+            width="16"
+            height="2"
+            rx="1"
+            className={`transform origin-center rotate-90 transition duration-200 ease-out ${
+              menuOpen && "!rotate-180"
+            }`}
+          />
+        </svg>
+      </button>
+      <div className={`grid overflow-hidden transition-all duration-300 ease-in-out text-slate-600 text-sm ${
+        menuOpen 
+          ? "grid-rows-[1fr] opacity-100"
+          : "grid-rows-[0fr] opacity-0"
+      }`}>
+        <div className="overflow-hidden">Enter your credentials{/* {<LoginFunction> here, modify code to expand downwards only*/}</div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginMenu;
+export default LoginMenu
