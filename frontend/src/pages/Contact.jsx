@@ -127,7 +127,7 @@ function Contact() {
                 <label htmlFor="date" className="block mr-2 text-gray-500">
                   Date of application
                 </label>
-                <input type="date" className="p-4 border border-black" />
+                <input type="date" className="p-4 border border-black rounded-md" />
               </div>
 
 
@@ -136,7 +136,7 @@ function Contact() {
                 <input type="checkbox" className="bg-red-500" checked={termsOfAgreement} onChange={(e) => setTermsOfAgreement(e.target.checked)}/>
               </div>
               <div className="mt-7">
-                <button type="submit" className="p-4 border border-black">
+                <button type="submit" className="p-4 border border-black rounded-md">
                   Submit form
                 </button>
               </div>
