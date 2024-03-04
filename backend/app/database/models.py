@@ -16,9 +16,16 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(255), nullable=True)
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     email: Mapped[str]
-    country_id: Mapped[int] = mapped_column(ForeignKey())
+    # password: Mapped[str] # add later
+    country: Mapped["Country"] = relationship(
+        "Country", back_populates="countries")
+    country_id: Mapped[int] = mapped_column(ForeignKey(
+        "country.id", ondelete="SET NULL"), nullable=True)
     is_public: Mapped[Boolean]
     is_banned: Mapped[Boolean]
+
+    def __repr__(self) -> str:
+        return f"User={self.username}"
 
 
 class Experience(Base):
@@ -33,8 +40,12 @@ class Experience(Base):
     is_public: Mapped[Boolean]
 
 
-
 class Country(Base):
     __tablename__ = "country"
 
     name: Mapped[str] = mapped_column(String(255))
+    users: Mapped[list[User]] = relationship(
+        "User", back_populates="country_id")
+
+    def __repr__(self) -> str:
+        return f"Country={self.name}"
