@@ -12,10 +12,12 @@ class User(Base):
     __tablename__ = "user"
 
     username: Mapped[str] = mapped_column(String(255), unique=True)
-    first_name: Mapped[str] = mapped_column(String(255))
-    last_name: Mapped[str] = mapped_column(String(255))
+    display_name: Mapped[str] = mapped_column(String(255))
+    first_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     email: Mapped[str]
-    country_id: Mapped[int]
+    country_id: Mapped[int] = mapped_column(ForeignKey())
+    is_public: Mapped[Boolean]
     is_banned: Mapped[Boolean]
 
 
@@ -28,6 +30,8 @@ class Experience(Base):
     longitude: Mapped[float]
     latitude: Mapped[float]
     is_positive: Mapped[Boolean]
+    is_public: Mapped[Boolean]
+
 
 
 class Country(Base):
