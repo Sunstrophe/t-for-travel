@@ -30,7 +30,7 @@ const SearchLocation = (props) => {
 
 function LeafletMap() {
   return (
-    <MapContainer className="map" center={[59.325, 18.05]} zoom={14}> {/* Default map location*/}
+    <MapContainer className="map" center={[59.325, 18.05]} zoom={15}> {/* Default map location*/}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"

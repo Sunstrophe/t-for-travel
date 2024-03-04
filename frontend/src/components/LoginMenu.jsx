@@ -5,7 +5,7 @@ const LoginMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="py-2">
+    <div className="relative py-2">
       <button
         onClick={() => setMenuOpen(!menuOpen)}
         className="flex justify-between w-full"
@@ -37,9 +37,9 @@ const LoginMenu = () => {
           />
         </svg>
       </button>
-      <div className={`grid overflow-hidden transition-all duration-300 ease-in-out text-slate-600 text-sm ${
+      <div className={`absolute grid overflow-hidden transition-all duration-300 ease-in-out text-slate-800 text-sm ${
         menuOpen 
-          ? "grid-rows-[1fr] opacity-100"
+          ? "grid-rows-[1fr] opacity-100 mt-12"
           : "grid-rows-[0fr] opacity-0"
       }`}>
         <div className="overflow-hidden">Enter your credentials{/* {<LoginFunction> here, modify code to expand downwards only*/}</div>
