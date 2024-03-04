@@ -21,8 +21,8 @@ class User(Base):
         "Country", back_populates="countries")
     country_id: Mapped[int] = mapped_column(ForeignKey(
         "country.id", ondelete="SET NULL"), nullable=True)
-    is_public: Mapped[Boolean]
-    is_banned: Mapped[Boolean]
+    is_public: Mapped[bool]
+    is_banned: Mapped[bool]
 
     def __repr__(self) -> str:
         return f"User={self.username}"
@@ -36,8 +36,8 @@ class Experience(Base):
     country_id: Mapped[int]
     longitude: Mapped[float]
     latitude: Mapped[float]
-    is_positive: Mapped[Boolean]
-    is_public: Mapped[Boolean]
+    is_positive: Mapped[bool]
+    is_public: Mapped[bool]
 
 
 class Country(Base):
