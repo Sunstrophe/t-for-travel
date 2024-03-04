@@ -33,7 +33,7 @@ function Header() {
       <Link to="/" className="ml-24 rounded-t-lg">
         <img src="https://www.shutterstock.com/shutterstock/photos/1806925870/display_1500/stock-vector-t-letter-logo-design-on-luxury-background-tt-monogram-initials-letter-logo-concept-t-icon-design-1806925870.jpg" alt="Logo" className="h-14" />
       </Link>
-      <div className="mr-24 p-3 hover:bg-green-500 rounded-lg border border-gray-500">
+      <div className="bg bg-green-400 mr-24 p-3 rounded-lg border border-gray-500 shadow-md">
         <LoginMenu />
       </div>
     </header>
