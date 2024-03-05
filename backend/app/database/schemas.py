@@ -13,7 +13,7 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(..., min_length=1, max_length=255,
                             description="The email for the user")
     # password: SecretStr = Field(..., min_length=8, max_length=255)
-    country: int
+    country_id: int
     is_public: bool | None = True
     is_banned: bool | None = False
 
@@ -28,5 +28,32 @@ class UserSchema(BaseModel):
                 "country_id": 1,
                 "is_public": True,
                 "is_banned": False
+            }
+        })
+    
+class ExperienceSchema(BaseModel):
+    title: str = Field(..., min_length=1, max_length=100,
+                          description="The name of the experience.")
+    description: str = Field(None,
+                                       description="The description of the experience.",
+                                       min_length=3, max_length=255)
+    country_id: int
+    latitude: float
+    longitude: float
+    
+    # picture:  associate picture with an id?
+    is_positive: bool | None = True
+    is_public: bool | None = True
+
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={
+            "example": {
+                "title": "Vetekatten",
+                "description": "A lovely place for a fika, I can highly recommend it!",
+                "country_id": 1,
+                "latitude": 59.3342,
+                "longitude": 18.0586,
+                "is_positive": True,
+                "is_public": False
             }
         })

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, DateTime, func
+from sqlalchemy import Integer, String, Text, Boolean, Float, ForeignKey, DateTime, func
 from datetime import datetime
 
 
@@ -18,7 +18,7 @@ class User(Base):
     email: Mapped[str]
     # password: Mapped[str] # add later
     country: Mapped["Country"] = relationship(
-        "Country", back_populates="countries")
+        "Country", back_populates="users")
     country_id: Mapped[int] = mapped_column(ForeignKey(
         "country.id", ondelete="SET NULL"), nullable=True)
     is_public: Mapped[bool]
@@ -31,11 +31,11 @@ class User(Base):
 class Experience(Base):
     __tablename__ = "experience"
 
-    title: Mapped[str] = mapped_column(String(255))
+    title: Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(Text)
-    country_id: Mapped[int]
-    longitude: Mapped[float]
-    latitude: Mapped[float]
+    country_id: Mapped[int] = mapped_column(Integer)
+    longitude: Mapped[float] = mapped_column(Float)
+    latitude: Mapped[float] = mapped_column(Float)
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
 
@@ -46,6 +46,7 @@ class Country(Base):
     name: Mapped[str] = mapped_column(String(255))
     users: Mapped[list[User]] = relationship(
         "User", back_populates="country_id")
+    
 
     def __repr__(self) -> str:
         return f"Country={self.name}"
