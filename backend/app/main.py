@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
 from app.database.models import User
-from app.schemas import UserSchema
+from app.database.schemas import UserSchema
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # init_db() # Vi ska skapa denna funktion
+    init_db() # Vi ska skapa denna funktion
     yield
 
 app = FastAPI(lifespan=lifespan)

@@ -29,5 +29,4 @@ class UserSchema(BaseModel):
                 "is_public": True,
                 "is_banned": False
             }
-        }
-    )
+        })
