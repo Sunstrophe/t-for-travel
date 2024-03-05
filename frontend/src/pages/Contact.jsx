@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 
 function Contact() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [submitForm, setSubmitForm] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [country, setCountry] = useState("");
-  const [termsOfAgreement, setTermsOfAgreement] = useState(false)
+  const [termsOfAgreement, setTermsOfAgreement] = useState(false);
 
   function handleFirstName(e) {
     setFirstName(e.target.value);
@@ -36,7 +38,7 @@ function Contact() {
     console.log(email);
     console.log(description);
     console.log(country);
-    console.log(termsOfAgreement)
+    console.log(termsOfAgreement);
   }
 
   return (
@@ -46,46 +48,63 @@ function Contact() {
           <h1 className="text-xl pl-8 pt-4 ">Share your thoughts with us!</h1>
           <form className="" onSubmit={submitContactForm}>
             <div className="p-8 my-10 border shadow-lg min-h-[30rem] bg-gray-100">
-              <div className="my-4">
-                <label htmlFor="firstName" className="block mr-2 text-gray-500">
-                  First name
-                </label>
-                <input
-                  type="text"
-                  className="p-2 border border-black rounded-xl"
-                  name="firstName"
-                  placeholder="Enter your first name"
-                  value={firstName}
-                  onChange={handleFirstName}
-                  autoComplete="off"
-                />
-              </div>
-              <div className="my-4">
-                <label htmlFor="LastName" className="block mr-2 text-gray-500">
-                  Last name
-                </label>
-                <input
-                  type="text"
-                  className="p-2 border border-black rounded-xl"
-                  name="LastName"
-                  placeholder="Enter your last name"
-                  value={lastName}
-                  onChange={handleLastName}
-                />
-              </div>
-              <div className="my-4">
-                <label htmlFor="email" className="block mr-2 text-gray-500">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="p-2 border border-black rounded-xl"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={handleEmail}
-                />
-              </div>
+              {!isLoggedIn && (
+                <>
+                  {/* Display these fields only when the user is not logged in */}
+                  <div className="my-4">
+                    <input
+                      type="text"
+                      className="p-2 border border-black rounded-xl"
+                      name="firstName"
+                      placeholder="Enter your first name:"
+                    />
+                  </div>
+
+                  <div className="my-4">
+                    <input
+                      type="text"
+                      className="p-2 border border-black rounded-xl"
+                      name="lastName"
+                      placeholder="Enter your last name:"
+                    />
+                  </div>
+
+                  <div className="my-4">
+                    <label
+                      htmlFor="country"
+                      className="block mr-2 text-gray-500"
+                    >
+                      Country
+                    </label>
+                    <select
+                      name="country"
+                      id="country"
+                      className="w-36 border border-black rounded-md"
+                      onChange={handleCountryOption}
+                      value={country}
+                    >
+                      <option value="">Select a country</option>
+                      <option value="denmark">Denmark</option>
+                      <option value="finland">Finland</option>
+                      <option value="iceland">Iceland</option>
+                      <option value="norway">Norway</option>
+                      <option value="sweden">Sweden</option>
+                    </select>
+                  </div>
+
+                  <div className="my-4">
+                    <input
+                      type="email"
+                      className="p-2 border border-black rounded-xl"
+                      name="email"
+                      placeholder="Enter your email address:"
+                      value={email}
+                      onChange={handleEmail}
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="my-4">
                 <label
                   htmlFor="description"
@@ -103,43 +122,49 @@ function Contact() {
                   onChange={handleDescription}
                 ></textarea>
               </div>
-              <div className="my-4">
-                <label htmlFor="country" className="block mr-2 text-gray-500">
-                  Country
-                </label>
-                <select
-                  name="country"
-                  id="country"
-                  className="w-36 border border-black rounded-md"
-                  onChange={handleCountryOption}
-                  value={country}
-                >
-                    <option value="">Select a country</option>
-                    <option value="denmark">Denmark</option>
-                    <option value="finland">Finland</option>
-                    <option value="iceland">Iceland</option>
-                    <option value="norway">Norway</option>
-                    <option value="sweden">Sweden</option>
-                </select>
-              </div>
-              
+
               <div className="my-4">
                 <label htmlFor="date" className="block mr-2 text-gray-500">
                   Date of application
                 </label>
-                <input type="date" className="p-4 border border-black rounded-md" />
+                <input
+                  type="date"
+                  className="p-4 border border-black rounded-md"
+                />
               </div>
-
 
               <div className="flex my-4">
-                <label htmlFor="terms" className="block mr-2 text-gray-500">Do you agree with our terms?</label>
-                <input type="checkbox" className="bg-red-500" checked={termsOfAgreement} onChange={(e) => setTermsOfAgreement(e.target.checked)}/>
+                <label htmlFor="terms" className="block mr-2 text-gray-500">
+                  Do you agree with our terms?
+                </label>
+                <input
+                  type="checkbox"
+                  className="bg-red-500"
+                  checked={termsOfAgreement}
+                  onChange={(e) => setTermsOfAgreement(e.target.checked)}
+                />
               </div>
+
               <div className="mt-7">
-                <button type="submit" className="p-4 border border-black rounded-md">
+                <button
+                  type="submit"
+                  className="p-4 border border-black rounded-md"
+                  onClick={() => setSubmitForm(true)}
+                  // setSubmitForm to true when user submits form.
+                >
                   Submit form
+                  
                 </button>
               </div>
+
+              {!submitForm || (
+                <>
+                  {/* Show this when user have submitted form */}
+                  <div className="mt-14 ml-2">
+                  Thank you! We will get back to you as soon as possible.
+                  </div>
+                </>
+              )}
             </div>
           </form>
         </div>

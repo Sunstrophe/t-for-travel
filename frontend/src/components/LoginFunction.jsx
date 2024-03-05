@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function LoginFunction() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Implement this to show different things when logged on or off
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
@@ -24,7 +24,6 @@ function LoginFunction() {
       <form className="" onSubmit={submitLoginForm}>
         <div className="">
           <div className="my-4">
-            {/* Display email input for both cases */}
             <input
               type="email"
               className="p-2 border border-black rounded-xl"
@@ -34,36 +33,6 @@ function LoginFunction() {
               onChange={handleEmail}
             />
           </div>
-
-          {!isLoggedIn && (
-            <>
-              {/* Display these fields only when the user is not logged in */}
-              <div className="my-4">
-                <input
-                  type="text"
-                  className="p-2 border border-black rounded-xl"
-                  name="firstName"
-                  placeholder="Enter your first name"
-                />
-              </div>
-              <div className="my-4">
-                <input
-                  type="text"
-                  className="p-2 border border-black rounded-xl"
-                  name="lastName"
-                  placeholder="Enter your last name"
-                />
-              </div>
-              <div className="my-4">
-                <input
-                  type="text"
-                  className="p-2 border border-black rounded-xl"
-                  name="country"
-                  placeholder="Enter your country"
-                />
-              </div>
-            </>
-          )}
 
           <div className="my-4">
             <input
