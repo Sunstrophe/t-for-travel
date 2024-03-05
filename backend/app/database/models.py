@@ -8,8 +8,8 @@ class Base(DeclarativeBase):
         Integer, primary_key=True, autoincrement=True)
 
 
-class User(Base):
-    __tablename__ = "user"
+class TravelUser(Base):
+    __tablename__ = "traveluser"
 
     username: Mapped[str] = mapped_column(String(255), unique=True)
     display_name: Mapped[str] = mapped_column(String(255))
@@ -18,14 +18,14 @@ class User(Base):
     email: Mapped[str]
     # password: Mapped[str] # add later
     country: Mapped["Country"] = relationship(
-        "Country", back_populates="countries")
+        "Country", back_populates="country")
     country_id: Mapped[int] = mapped_column(ForeignKey(
         "country.id", ondelete="SET NULL"), nullable=True)
     is_public: Mapped[bool]
     is_banned: Mapped[bool]
 
     def __repr__(self) -> str:
-        return f"User={self.username}"
+        return f"<User={self.username}>"
 
 
 class Experience(Base):
@@ -36,16 +36,16 @@ class Experience(Base):
     country_id: Mapped[int]
     longitude: Mapped[float]
     latitude: Mapped[float]
-    is_positive: Mapped[bool]
-    is_public: Mapped[bool]
+    is_positive: Mapped[bool] = mapped_column(Boolean)
+    is_public: Mapped[bool] = mapped_column(Boolean)
 
 
 class Country(Base):
     __tablename__ = "country"
 
     name: Mapped[str] = mapped_column(String(255))
-    users: Mapped[list[User]] = relationship(
-        "User", back_populates="country_id")
+    users: Mapped[list[TravelUser]] = relationship(
+        "User", back_populates="traveluser")
 
     def __repr__(self) -> str:
-        return f"Country={self.name}"
+        return f"<Country={self.name}>"
