@@ -28,7 +28,7 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.post("/user/{username}", status_code=200)
+@app.get("/user/{username}", status_code=200)
 def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
     try:
         db_user = db.scalars(select(TravelUser).where(
