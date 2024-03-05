@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, SecretStr
 
 
-class UserSchema(BaseModel):
+class TravelUserSchema(BaseModel):
     username: str = Field(..., min_length=4, max_length=16,
                           description="The name used to login to the users account.")
     display_name: str = Field(..., min_length=1, max_length=16,
@@ -13,7 +13,7 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(..., min_length=1, max_length=255,
                             description="The email for the user")
     # password: SecretStr = Field(..., min_length=8, max_length=255)
-    country_id: int
+    country_id_id: int = Field(..., description="id for whatever country the user has set for their account")
     is_public: bool | None = True
     is_banned: bool | None = False
 

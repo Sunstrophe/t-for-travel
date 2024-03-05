@@ -8,8 +8,8 @@ class Base(DeclarativeBase):
         Integer, primary_key=True, autoincrement=True)
 
 
-class User(Base):
-    __tablename__ = "user"
+class TravelUser(Base):
+    __tablename__ = "traveluser"
 
     username: Mapped[str] = mapped_column(String(255), unique=True)
     display_name: Mapped[str] = mapped_column(String(255))
@@ -25,7 +25,7 @@ class User(Base):
     is_banned: Mapped[bool]
 
     def __repr__(self) -> str:
-        return f"User={self.username}"
+        return f"<User={self.username}>"
 
 
 class Experience(Base):
@@ -33,9 +33,9 @@ class Experience(Base):
 
     title: Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(Text)
-    country_id: Mapped[int] = mapped_column(Integer)
-    longitude: Mapped[float] = mapped_column(Float)
-    latitude: Mapped[float] = mapped_column(Float)
+    country_id: Mapped[int]
+    longitude: Mapped[float]
+    latitude: Mapped[float]
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
 
@@ -44,9 +44,8 @@ class Country(Base):
     __tablename__ = "country"
 
     name: Mapped[str] = mapped_column(String(255))
-    users: Mapped[list[User]] = relationship(
-        "User", back_populates="country_id")
-    
+    users: Mapped[list[TravelUser]] = relationship(
+        "TravelUser", back_populates="country")
 
     def __repr__(self) -> str:
-        return f"Country={self.name}"
+        return f"<Country={self.name}>"
