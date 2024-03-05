@@ -3,9 +3,7 @@ import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
-    /*
-  Search Location
- */
+
 
 const SearchLocation = (props) => {
   // Get access to leaflet map

@@ -1,18 +1,19 @@
-import React, {useState} from "react"
-{/* import LoginFunction from "./LoginFunction";, modify code to expand the divs downwards only*/}
+// LoginMenu.jsx
+import React, { useState } from "react";
+import LoginFunction from "./LoginFunction";
 
 const LoginMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="relative py-2">
+    <div className="relative">
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="flex justify-between w-full"
-        >
-        <span>Login</span>
+        className="flex justify-between w-full px-2"
+      >{/* SVG plus sign which rotates and turn into minus when clicked on*/}
+        <span className="mr-28">Login</span>
         <svg
-          className="fill-ger-400 shrink-0 ml-8"
+          className="fill-gray-500 shrink-0 ml-8"
           width="16"
           height="16"
           xmlns="http://www.w3.org/2000/svg"
@@ -37,15 +38,16 @@ const LoginMenu = () => {
           />
         </svg>
       </button>
-      <div className={`absolute grid overflow-hidden transition-all duration-300 ease-in-out text-slate-800 text-sm ${
-        menuOpen 
-          ? "grid-rows-[1fr] opacity-100 mt-12"
-          : "grid-rows-[0fr] opacity-0"
-      }`}>
-        <div className="overflow-hidden">Enter your credentials{/* {<LoginFunction> here, modify code to expand downwards only*/}</div>
-      </div>
+      {/* If menu is open, display the div with LoginFunction*/}
+      {menuOpen && (
+        <div
+          className="absolute top-full mt-4 bg-white border border-gray-300 rounded-md shadow-md right-0"
+        >
+          <LoginFunction />
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default LoginMenu
+export default LoginMenu;

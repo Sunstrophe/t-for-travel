@@ -7,7 +7,7 @@ function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Search/>
-      <div className="flex justify-center px-20 pb-4">
+      <div className="flex justify-center px-20 pb-4 -z-10">
         <LeafletMap/>
       </div>
     </div>
