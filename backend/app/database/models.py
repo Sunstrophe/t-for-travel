@@ -36,8 +36,8 @@ class Experience(Base):
     country_id: Mapped[int]
     longitude: Mapped[float]
     latitude: Mapped[float]
-    is_positive: Mapped[bool]
-    is_public: Mapped[bool]
+    is_positive: Mapped[bool] = mapped_column(Boolean)
+    is_public: Mapped[bool] = mapped_column(Boolean)
 
 
 class Country(Base):

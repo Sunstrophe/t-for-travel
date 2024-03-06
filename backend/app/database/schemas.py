@@ -13,7 +13,7 @@ class TravelUserSchema(BaseModel):
     email: EmailStr = Field(..., min_length=1, max_length=255,
                             description="The email for the user")
     # password: SecretStr = Field(..., min_length=8, max_length=255)
-    country_id_id: int = Field(..., description="id for whatever country the user has set for their account")
+    country_id: int = Field(..., description="id for whatever country the user has set for their account")
     is_public: bool | None = True
     is_banned: bool | None = False
 
