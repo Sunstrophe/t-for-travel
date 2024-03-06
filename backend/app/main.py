@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.post("/user", status_code=200)
+@app.post("/user", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
         db_user = TravelUser(**user.model_dump())
@@ -26,3 +26,17 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Could not add user")
     return db_user
+
+
+@app.get("/user/{username}", status_code=200)
+def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
+    try:
+        db_user = db.scalars(select(TravelUser).where(
+            TravelUser.username == username)).first()
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found!")
+
+        return db_user
+
+    except Exception as e:
+        raise e

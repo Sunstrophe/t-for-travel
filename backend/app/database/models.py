@@ -28,18 +28,6 @@ class TravelUser(Base):
         return f"<User={self.username}>"
 
 
-class Experience(Base):
-    __tablename__ = "experience"
-
-    title: Mapped[str] = mapped_column(String(100))
-    description: Mapped[str] = mapped_column(Text)
-    country_id: Mapped[int]
-    longitude: Mapped[float]
-    latitude: Mapped[float]
-    is_positive: Mapped[bool] = mapped_column(Boolean)
-    is_public: Mapped[bool] = mapped_column(Boolean)
-
-
 class Country(Base):
     __tablename__ = "country"
 
@@ -49,3 +37,21 @@ class Country(Base):
 
     def __repr__(self) -> str:
         return f"<Country={self.name}>"
+
+
+class Experience(Base):
+    __tablename__ = "traveluser"
+
+    title: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str] = mapped_column(String(255))
+    country: Mapped["Country"] = relationship(
+        "Country", back_populates="users")
+    country_id: Mapped[int] = mapped_column(ForeignKey(
+        "country.id", ondelete="SET NULL"), nullable=True)
+    latitude: Mapped[float] = mapped_column[Float]
+    longitude: Mapped[float] = mapped_column[Float]
+    is_positive: Mapped[bool]
+    is_public: Mapped[bool]
+
+    def __repr__(self) -> str:
+        return f"<Experience={self.username}>"

@@ -29,8 +29,9 @@ class TravelUserSchema(BaseModel):
                 "is_public": True,
                 "is_banned": False
             }
-        })
-    
+        }
+    )
+
 class ExperienceSchema(BaseModel):
     title: str = Field(..., min_length=1, max_length=100,
                           description="The name of the experience.")
