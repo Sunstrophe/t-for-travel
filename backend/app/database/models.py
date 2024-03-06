@@ -40,7 +40,7 @@ class Country(Base):
 
 
 class Experience(Base):
-    __tablename__ = "traveluser"
+    __tablename__ = "experience"
 
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(String(255))
