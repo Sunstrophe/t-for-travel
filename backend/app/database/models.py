@@ -54,4 +54,4 @@ class Experience(Base):
     is_public: Mapped[bool]
 
     def __repr__(self) -> str:
-        return f"<Experience={self.username}>"
+        return f"<Experience={self.title}>"
