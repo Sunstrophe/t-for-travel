@@ -48,8 +48,8 @@ class Experience(Base):
         "Country", back_populates="users")
     country_id: Mapped[int] = mapped_column(ForeignKey(
         "country.id", ondelete="SET NULL"), nullable=True)
-    latitude: Mapped[float] = mapped_column[Float]
-    longitude: Mapped[float] = mapped_column[Float]
+    latitude: Mapped[float]
+    longitude: Mapped[float]
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
 
