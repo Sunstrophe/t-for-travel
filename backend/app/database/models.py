@@ -12,7 +12,7 @@ class TravelUser(Base):
     __tablename__ = "traveluser"
 
     username: Mapped[str] = mapped_column(String(255), unique=True)
-    display_name: Mapped[str] = mapped_column(String(255))
+    display_name: Mapped[str] = mapped_column(String(255), nullable=True)
     first_name: Mapped[str] = mapped_column(String(255), nullable=True)
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     email: Mapped[str]
