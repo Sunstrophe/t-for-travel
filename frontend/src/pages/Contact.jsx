@@ -44,7 +44,7 @@ function Contact() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-auto">
-        <div className="container mx-auto bg-inherit">
+        <div className="container mx-auto">
           <h1 className="text-xl pl-8 pt-4 ">Share your thoughts with us!</h1>
           <form className="" onSubmit={submitContactForm}>
             <div className="p-8 my-10 border shadow-lg min-h-[30rem] bg-gray-100">

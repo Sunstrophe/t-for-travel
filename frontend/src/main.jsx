@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Cookies from "./pages/Cookies";
+import Signup from "./pages/Signup";
+import Userpage from "./pages/Userpage";
 
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/cookies" element={<Cookies />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/userpage" element={<Userpage />} />
         </Route>
       </Routes>
     </BrowserRouter>
