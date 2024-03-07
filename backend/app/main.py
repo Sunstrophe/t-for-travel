@@ -19,11 +19,14 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-router = APIRouter()
-IMAGEDIR = "" # Works with local directory eg. C:/User/{username}/Pictures/test/
+user_router = APIRouter()
+experience_router = APIRouter()
+image_router = APIRouter()
+# Works with local directory eg. C:/User/{username}/Pictures/test/
+IMAGEDIR = ""
 
 
-@app.post("/user", status_code=201)
+@user_router.post("/", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
         db_user = TravelUser(**user.model_dump())
@@ -34,7 +37,7 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.get("/user/{username}", status_code=200)
+@user_router.get("/{username}", status_code=200)
 def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
     try:
         db_user = db.scalars(select(TravelUser).where(
@@ -48,7 +51,7 @@ def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
         raise e
 
 
-@app.post("/posts/experience/user/}", status_code=201)
+@experience_router.post("/}", status_code=201)
 def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     try:
         db_experience = Experience(**experience.model_dump())
@@ -59,7 +62,7 @@ def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     return db_experience
 
 
-@app.get("/experience/{title}", status_code=200)
+@experience_router.get("/{title}", status_code=200)
 def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         db_experience = db.scalars(select(Experience).where(
@@ -74,7 +77,7 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
         raise e
 
 
-@app.patch("/experience/{title}", status_code=200)
+@experience_router.patch("/{title}", status_code=200)
 def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         # Check if the experience exists
@@ -97,7 +100,7 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/images", status_code=201)
+@image_router.post("/", status_code=201)
 async def upload_image(file: UploadFile):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
     # data = file.file
@@ -114,9 +117,13 @@ async def upload_image(file: UploadFile):
         f.write(contents)
     return {"uploaded image: ": file.filename}
 
-# @app.get("/image/{image_name}", status_code=200)
-# def get_image(image_name: str):
-#     images = os.listdir(IMAGEDIR)
-#     return FileResponse(f"{IMAGEDIR}{image_name}")
 
-# app.include_router(router, prefix="/images", tags=["images"])
+@image_router.get("/{image_name}", status_code=200)
+def get_image(image_name: str):
+    # images = os.listdir(IMAGEDIR)
+    return FileResponse(f"{IMAGEDIR}{image_name}")
+
+
+app.include_router(user_router, prefix="/user", tags=["user"])
+app.include_router(experience_router, prefix="/experience", tags=["experience"])
+app.include_router(image_router, prefix="/images", tags=["images"])
