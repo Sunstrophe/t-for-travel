@@ -29,10 +29,10 @@ const LoginMenu = () => {
     <div className="relative">
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="flex justify-between w-full pt-1.5"
+        className="flex justify-between pt-1.5"
       >
         {/* SVG plus sign which rotates and turns into minus when clicked on*/}
-        <span className="mr-28 text-xl">Login</span>
+        <span className="mr-34 font-light">Login</span>
         <svg
           className="fill-gray-400 shrink-0 ml-8"
           width="16"
@@ -62,14 +62,14 @@ const LoginMenu = () => {
 
       {/* If menu is open, display the form*/}
       {menuOpen && (
-        <div className="absolute top-full mt-4  bg-white border border-gray-300 rounded-md shadow-md right-0">
-          <div className="flex mx-3">
+        <div className="absolute top-full mt-4 px-12 bg-white border border-gray-300 rounded-md shadow-md md:w-96 right-0">
+          <div className="flex mx-3 w-full">
             <form onSubmit={submitLoginForm}>
               <div>
                 <div className="my-4">
                   <label
                     for="email"
-                    class="block mb-2 text-sm font-medium text-gray-900"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Your email
                   </label>
@@ -77,7 +77,7 @@ const LoginMenu = () => {
                     type="email"
                     name="email"
                     id="email"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                     placeholder="name@company.com"
                     value={email}
                     onChange={handleEmail}
@@ -87,7 +87,7 @@ const LoginMenu = () => {
                 <div className="mt-4">
                   <label
                     for="password"
-                    class="block mb-2 text-sm font-medium text-gray-900"
+                    className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Password
                   </label>
@@ -96,21 +96,36 @@ const LoginMenu = () => {
                     name="password"
                     id="password"
                     placeholder="••••••••"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                     value={password}
                     onChange={handlePassword}
                   />
                 </div>
-                <div className="ml-14 mt-2 mb-16 text-sm font-light text-gray-500">
+                <div className="ml-4 mt-2 mb-6 text-sm font-light text-gray-500">
                   Forgot your password?
                   <div className="text-sm underline hover:text-gray-600">
                     <Link to="/resetpassword">Reset password</Link>
                   </div>
                 </div>
 
+                <div className="flex justify-flex-start">
+                  <Link to="/userpage">
+                    <button
+                      type="submit"
+                      onClick={() => setMenuOpen(false)} // Close the menu when the button is clicked
+                      className="bg-primary-600 text-gray-600 px-4 py-2 border border-gray-400 rounded-md hover:bg-primary-700
+                    focus:outline-none focus:ring focus:border-primary-300"
+                    >
+                      Login
+                    </button>
+                  </Link>
+                </div>
+
                 {/* Clickable link to signup page*/}
                 <div className="my-6">
-                  <div className="mt-6 text-sm font-light text-gray-500 text-center">Don't have an account?</div>
+                  <div className="mt-6 text-sm font-light text-gray-500 text-center">
+                    Don't have an account?
+                  </div>
                   <div className="underline hover:text-gray-500 text-center">
                     <Link to="/signup">Sign up here</Link>
                   </div>
