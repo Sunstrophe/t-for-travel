@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, APIRouter,  HTTPException, Depends, status
+from fastapi import FastAPI, UploadFile, File, APIRouter,  HTTPException, Depends, status
 from app.db_setup import init_db, get_db
 from contextlib import asynccontextmanager
 from fastapi import Request
@@ -23,7 +23,7 @@ user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
 # Works with local directory eg. C:/User/{username}/Pictures/test/
-IMAGEDIR = ""
+IMAGEDIR = "E:/test/"
 
 
 @user_router.post("/", status_code=201)
@@ -101,21 +101,32 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
 
 
 @image_router.post("/", status_code=201)
-async def upload_image(file: UploadFile):
+async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-    # data = file.file
-    filename = file.filename
-    filename_splitted = filename.split(".")
-    file_extension = filename_splitted[-1]
-    new_img_name = uuid4()
-    if file_extension not in accepted_img_extensions:
-        raise HTTPException(
-            status_code=400, detail="Image extension is not supported")
-    file.filename = f"{new_img_name}.{file_extension}"
-    contents = await file.read()
-    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-        f.write(contents)
-    return {"uploaded image: ": file.filename}
+    try:
+        for file in files:
+            filename = file.filename
+            filename_splitted = filename.split(".")
+            file_extension = filename_splitted[-1]
+            if file_extension not in accepted_img_extensions:
+                raise HTTPException(
+                    status_code=400, detail="Image extension is not supported")
+            new_img_name = uuid4()
+            file.filename = f"{new_img_name}.{file_extension}"
+            contents = await file.read()
+            with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+                f.write(contents)
+
+        for file in files:
+            print(f"Test: {file.filename}")
+            db_image_link = ImageLink(file)
+            db.add(db_image_link)
+            db.commit()
+    except Exception as e:
+        # return {"message": "There was an error uploading the file(s)",
+        #         "error": e}
+        raise e
+    return {"uploaded_image(s): ": [file.filename for file in files]}
 
 
 @image_router.get("/{image_name}", status_code=200)
@@ -125,5 +136,6 @@ def get_image(image_name: str):
 
 
 app.include_router(user_router, prefix="/user", tags=["user"])
-app.include_router(experience_router, prefix="/experience", tags=["experience"])
+app.include_router(experience_router, prefix="/experience",
+                   tags=["experience"])
 app.include_router(image_router, prefix="/images", tags=["images"])
