@@ -23,6 +23,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 router = APIRouter()
+IMAGEDIR = "images/"
 
 @app.post("/user", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
@@ -49,7 +50,7 @@ def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
         raise e
     
 
-@app.post("/posts/user/experience/}", status_code=201)
+@app.post("/posts/experience/user/}", status_code=201)
 def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     try:
         db_experience = Experience(**experience.model_dump())
@@ -94,9 +95,9 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
         raise HTTPException(status_code=500, detail=str(e))
     
 
-IMAGEDIR = "images/"
 
-@router.post("/", status_code=201)
+
+@app.post("/", status_code=201)
 async def upload_image(file: UploadFile):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
     data = file.file
@@ -112,7 +113,7 @@ async def upload_image(file: UploadFile):
         f.write(contents)
     return {"uploaded image: ": file.filename}
 
-@router.get("/{image_name}", status_code=200)
+@app.get("/{image_name}", status_code=200)
 def get_image(image_name: str):
     images = os.listdir(IMAGEDIR)
     return FileResponse(f"{IMAGEDIR}{image_name}")
