@@ -42,7 +42,7 @@ function Contact() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100 bg-opacity-50">
       <div className="flex-auto">
         <div className="container mx-auto">
           <h1 className="text-xl pl-8 pt-4 ">Share your thoughts with us!</h1>

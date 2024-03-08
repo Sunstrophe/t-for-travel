@@ -5,7 +5,7 @@ import LeafletMap from "../components/LeafletMap";
 
 function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-opacity-50">
+    <div className="flex flex-col min-h-screen bg-gray-100 bg-opacity-50">
       <Search/>
       <div className="flex justify-center px-20 pb-4 z-0">
         <LeafletMap/>

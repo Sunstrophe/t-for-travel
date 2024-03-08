@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserExperiencePost from "../components/UserExperiencePost";
 
 function Userpage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -11,35 +12,44 @@ function Userpage() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedPostIndex(null);
   };
 
   const handleNewPost = (newPost) => {
     setPosts([newPost, ...posts]);
-    handleCloseModal(); // Close the modal after adding a new post
+    handleCloseModal();
   };
 
   return (
-    <div className="bg-gray-100 bg-opacity-50">
+    <div className="flex flex-col min-h-screen bg-gray-100 bg-opacity-50">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
           <div className="col-span-4 sm:col-span-3 overflow-y-auto max-h-screen">
             <div className="bg-white shadow rounded-lg p-6">
               <div className="flex flex-col items-center">
-                <h1 className="font-bold uppercase my-6">Latest post</h1>
+                <h1 className="font-bold uppercase my-6">My latest post</h1>
                 {posts.map((post, index) => (
-                  <div key={index} className="mb-4">
-                    
+                  <div
+                    key={index}
+                    className={`mb-4 cursor-pointer ${selectedPostIndex === index ? "bg-gray-100" : ""}`}
+                    onClick={() => setSelectedPostIndex(index)}
+                  >
                     <img
                       src={URL.createObjectURL(post.image)}
                       alt={post.title}
                       className="w-full h-48 object-cover rounded-lg"
                     />
-                    {index === 0 && <hr className="my-2 border-t border-gray-300" />}
-                    <h3 className="text-lg font-semibold mt-2">{post.title}</h3>
-                    <p className="mt-2">{post.description}</p>
+                    {selectedPostIndex === index && (
+                      <div className="expanded-post">
+                        <hr className="my-2 border-t border-gray-300" />
+                        <h3 className="text-lg font-semibold mt-2">{post.title}</h3>
+                        <p className="mt-2">{post.description}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
+              <hr className="my-2 border-t border-gray-300" />
             </div>
           </div>
           <div className="col-span-4 sm:col-span-9">
@@ -59,7 +69,9 @@ function Userpage() {
                   Edit user details
                 </button>
               </div>
-              {isModalOpen && <UserExperiencePost onClose={handleCloseModal} onNewPost={handleNewPost} />}
+              {isModalOpen && (
+                <UserExperiencePost onClose={handleCloseModal} onNewPost={handleNewPost} />
+              )}
             </div>
           </div>
         </div>
