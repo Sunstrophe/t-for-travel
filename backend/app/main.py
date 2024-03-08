@@ -117,9 +117,11 @@ async def upload_image(files: list[UploadFile] = File(...), db: Session = Depend
             with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
                 f.write(contents)
 
-        for file in files:
+    # Uploads to database -> Probably want to move this to experience
+        for i, file in enumerate(files):
             print(f"Test: {file.filename}")
-            db_image_link = ImageLink(file)
+            db_file = ImageLinkSchema(image_link=file.filename, order=i)
+            db_image_link = ImageLink(**db_file.model_dump())
             db.add(db_image_link)
             db.commit()
     except Exception as e:
