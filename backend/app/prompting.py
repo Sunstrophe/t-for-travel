@@ -12,11 +12,11 @@ def handle_call(input):
     if count_input_token(input) > max_length:
         raise Exception
     response = call_ai(input)
-    content = response.choices[0].message.content
+    content = eval(response.choices[0].message.content)
     # log_output(response)
     if not verify_output(content):
         raise Exception
-    print(content)
+    # print(content)
     return content
 
 # Is supposed to approximate the amount of tokens used by user input
