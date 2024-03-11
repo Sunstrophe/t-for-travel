@@ -1,43 +1,32 @@
-import React from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import { useEffect } from "react";
-import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+// LeafletMap.jsx
+import React, { useRef } from "react";
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet'; 
+import Search from "./Search";
 
+const MapWrapper = () => {
+  const mapRef = useRef(null);
+  const handleSearch = (lat, lon) => {
+    const map = mapRef.current;
+    // Set coordinates and make a marker at the input coordinates, with zoom level of 14
+    if (map) {
+      map.setView([lat, lon], 14);
+      L.marker([lat, lon]).addTo(map);
+    }
+  };
 
-const SearchLocation = (props) => {
-  // Get access to leaflet map
-  const { provider } = props;
-
-  // Get search control
-  
-  const searchControl = new GeoSearchControl({
-    provider: provider,
-  });
-
-  //   Access Leaflet Map
-  const map = useMap(props);
-  useEffect(() => {
-    // Add searchControl to Leaflet map
-    map.addControl(searchControl);
-    return () => map.removeControl(searchControl);
-  });
-
-  return null; // Do not render any thing
+  return (
+    <div>
+      
+      <Search onSearch={handleSearch} />
+      <MapContainer ref={mapRef} center={[59.31, 18.07]} zoom={14} scrollWheelZoom={true}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+        />
+      </MapContainer>
+    </div>
+  );
 };
 
-function LeafletMap() {
-  return (
-    <MapContainer className="map" center={[59.325, 18.05]} zoom={15}> {/* Default map location*/}
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-      />
-
-      <SearchLocation provider={new OpenStreetMapProvider()} />
-      {/* ... */}
-    </MapContainer>
-  );
-}
-
-export default LeafletMap;
+export default MapWrapper;
