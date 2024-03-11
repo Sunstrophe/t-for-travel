@@ -16,8 +16,13 @@ def call_ai():
             {"role": "user", "content": "music"}
         ]
     )
+    # Returns the following format
+    # ChatCompletionMessage(content='{\n    "latitude": 0.0,\n    "longitude": 0.0\n}', role='assistant', function_call=None, tool_calls=None)
     print(response.choices[0].message)
-    # print()
+
+    # Prints content of response message
+    # print(response.choices[0].message.content)
+
     # print(response.usage)
 
 
