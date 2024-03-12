@@ -16,6 +16,7 @@ from app.schemas import ExperienceSchema
 from app.schemas import ExperienceUpdateSchema
 from app.prompting import handle_call
 
+from exceptions import MaxTokenReachedException
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -142,4 +143,7 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
 
 @app.get("/location", status_code=200)
 def get_location(search_prompt: str):
-    return handle_call(input=search_prompt)
+    try:
+        return handle_call(input=search_prompt)
+    except MaxTokenReachedException:
+        raise HTTPException(status_code=400, detail="Please enter less number of characters.")

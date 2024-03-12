@@ -1,6 +1,7 @@
 from openai import OpenAI
 from os import getenv
 from dotenv import load_dotenv
+from exceptions import MaxTokenReachedException
 
 load_dotenv()
 
@@ -10,7 +11,7 @@ max_length = 100
 
 def handle_call(input):
     if count_input_token(input) > max_length:
-        raise Exception
+        raise MaxTokenReachedException
     response = call_ai(input)
     content = eval(response.choices[0].message.content)
     # log_output(response)
