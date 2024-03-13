@@ -4,7 +4,7 @@ import L from 'leaflet';
 import Search from "./Search";
 import ExpShort from "../components/ExpShort";
 
-const MapWrapper = ({ onSearch, selectedImage }) => {
+const LeafletMap = ({ onSearch, selectedImage }) => {
   const mapRef = useRef(null);
   const [markerPosition, setMarkerPosition] = useState([59.31, 18.07]);
 
@@ -43,4 +43,4 @@ const MapWrapper = ({ onSearch, selectedImage }) => {
   );
 };
 
-export default MapWrapper;
+export default LeafletMap;

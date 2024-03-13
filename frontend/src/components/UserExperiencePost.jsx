@@ -1,20 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import LeafletMap from './LeafletMap';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import Search from "../components/Search";
+import ExpShort from "../components/ExpShort";
 
 const UserExperiencePost = ({ onClose, onNewPost }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
   const [isMapVisible, setIsMapVisible] = useState(false);
-  const [positiveExperience, setPositiveExperience] = useState(true); // Default to true
-  const [isPublic, setIsPublic] = useState(true); // Default to true
+  const [coordinates, setCoordinates] = useState([59.31, 18.07]); // Default coordinates
+
   const modalContentRef = useRef(null);
 
   useEffect(() => {
     adjustModalPosition();
-  }, [title, description, selectedImage, isMapVisible]);
+  }, [title, description, selectedImage]);
 
   const adjustModalPosition = () => {
     const contentHeight = modalContentRef.current.clientHeight;
@@ -64,20 +65,12 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
     setIsMapVisible(!isMapVisible);
   };
 
-  const handleSearch = (lat, lon) => {
-    setLatitude(lat);
-    setLongitude(lon);
-  };
-
   const handleSave = () => {
     const newPost = {
       title,
       description,
       image: selectedImage,
-      latitude,
-      longitude,
-      positiveExperience,
-      isPublic,
+      coordinates,
     };
 
     onNewPost(newPost);
@@ -85,11 +78,12 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
     setTitle('');
     setDescription('');
     setSelectedImage(null);
-    setIsMapVisible(false);
-    setLatitude(null);
-    setLongitude(null);
-    setPositiveExperience(true); // Reset to default
-    setIsPublic(true); // Reset to default
+    setIsMapVisible(false); // Close the map when saving
+    setCoordinates([59.31, 18.07]); // Reset coordinates to default
+  };
+
+  const handleSearch = (lat, lon) => {
+    setCoordinates([lat, lon]);
   };
 
   return (
@@ -151,57 +145,37 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
           >
             {isMapVisible ? 'Hide Map' : 'Show Map'}
           </button>
-          {isMapVisible && <LeafletMap onSearch={handleSearch} />}
+          {isMapVisible && (
+            <MapContainer center={coordinates} zoom={14} style={{ height: '300px', marginTop: '10px' }}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+              />
+              <Marker position={coordinates}>
+                <Popup>
+                  <ExpShort image={selectedImage ? URL.createObjectURL(selectedImage) : ''} />
+                </Popup>
+              </Marker>
+            </MapContainer>
+          )}
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Positive Experience?</label>
-          <div className="flex items-center mt-2">
-            <input
-              type="radio"
-              id="positiveYes"
-              name="positiveExperience"
-              value="true"
-              checked={positiveExperience}
-              onChange={() => setPositiveExperience(true)}
-            />
-            <label htmlFor="positiveYes" className="ml-2">Yes</label>
-            <input
-              type="radio"
-              id="positiveNo"
-              name="positiveExperience"
-              value="false"
-              checked={!positiveExperience}
-              onChange={() => setPositiveExperience(false)}
-              className="ml-4"
-            />
-            <label htmlFor="positiveNo" className="ml-2">No</label>
-          </div>
+          <label className="block text-sm font-medium text-gray-700">Positive Experience:</label>
+          <input
+            type="checkbox"
+            checked={true} // Default to true
+            className="border p-2 rounded-lg ml-2"
+          />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Public?</label>
-          <div className="flex items-center mt-2">
-            <input
-              type="radio"
-              id="publicYes"
-              name="isPublic"
-              value="true"
-              checked={isPublic}
-              onChange={() => setIsPublic(true)}
-            />
-            <label htmlFor="publicYes" className="ml-2">Yes</label>
-            <input
-              type="radio"
-              id="publicNo"
-              name="isPublic"
-              value="false"
-              checked={!isPublic}
-              onChange={() => setIsPublic(false)}
-              className="ml-4"
-            />
-            <label htmlFor="publicNo" className="ml-2">No</label>
-          </div>
+          <label className="block text-sm font-medium text-gray-700">Public:</label>
+          <input
+            type="checkbox"
+            checked={true} // Default to true
+            className="border p-2 rounded-lg ml-2"
+          />
         </div>
 
         <div className="flex justify-between">
@@ -212,7 +186,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             Save
           </button>
           <button
-            className="bg-red-500 text-white p-2 rounded-md hover:text-gray-700"
+            className="bg-red-500 text-white p-2 rounded-md hover:text-gray-700 "
             onClick={onClose}
           >
             Close
