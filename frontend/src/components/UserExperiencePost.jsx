@@ -1,15 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import Search from "../components/Search";
-import ExpShort from "../components/ExpShort";
+import React, { useState, useRef, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import Search from "./Search";
+import ExpSquare from "../components/ExpShort";
+import Switch from "react-switch";
 
 const UserExperiencePost = ({ onClose, onNewPost }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [coordinates, setCoordinates] = useState([59.31, 18.07]); // Default coordinates
+  const [positiveExperience, setPositiveExperience] = useState(true);
+  const [isPublic, setIsPublic] = useState(true);
 
   const modalContentRef = useRef(null);
 
@@ -71,15 +74,22 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
       description,
       image: selectedImage,
       coordinates,
+      positiveExperience,
+      isPublic,
     };
 
     onNewPost(newPost);
 
-    setTitle('');
-    setDescription('');
+    setTitle("");
+    setDescription("");
     setSelectedImage(null);
     setIsMapVisible(false); // Close the map when saving
     setCoordinates([59.31, 18.07]); // Reset coordinates to default
+    setPositiveExperience(true);
+    setIsPublic(true);
+
+    // Close the modal
+    onClose();
   };
 
   const handleSearch = (lat, lon) => {
@@ -97,7 +107,9 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Title:</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Title:
+          </label>
           <input
             type="text"
             value={title}
@@ -108,7 +120,9 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Description:</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description:
+          </label>
           <textarea
             value={description}
             onChange={handleDescriptionChange}
@@ -118,13 +132,17 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Upload an Image:</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Upload an Image:
+          </label>
           <input
             type="file"
             onChange={handleImageUpload}
             className="w-1/2 border p-2 rounded-lg"
           />
-          <p className="text-gray-500 text-sm mt-2">- or drag and drop an image here -</p>
+          <p className="text-gray-500 text-sm mt-2">
+            - or drag and drop an image here -
+          </p>
         </div>
 
         {selectedImage && (
@@ -138,22 +156,31 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         )}
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Select Location:</label>
-          <button
-            className="w-1/2 border p-2 rounded-lg"
-            onClick={handleToggleMap}
-          >
-            {isMapVisible ? 'Hide Map' : 'Show Map'}
-          </button>
+          <label className="block text-sm font-medium text-gray-700">
+            Select Location:
+          </label>
+          <div className="flex items-center">
+            <button
+              className="w-1/2 border p-2 rounded-lg"
+              onClick={handleToggleMap}
+            >
+              {isMapVisible ? "Hide Map" : "Show Map"}
+            </button>
+            {isMapVisible && <Search onSearch={handleSearch} />}
+          </div>
           {isMapVisible && (
-            <MapContainer center={coordinates} zoom={14} style={{ height: '300px', marginTop: '10px' }}>
+            <MapContainer
+              center={coordinates}
+              zoom={14}
+              style={{ height: "300px", marginTop: "10px" }}
+            >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
               />
               <Marker position={coordinates}>
                 <Popup>
-                  <ExpShort image={selectedImage ? URL.createObjectURL(selectedImage) : ''} />
+                <ExpSquare image={selectedImage ? URL.createObjectURL(selectedImage) : ""} />
                 </Popup>
               </Marker>
             </MapContainer>
@@ -161,20 +188,24 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Positive Experience:</label>
-          <input
-            type="checkbox"
-            checked={true} // Default to true
-            className="border p-2 rounded-lg ml-2"
+          <label className="block text-sm font-medium text-gray-700">
+            Positive Experience:
+          </label>
+          <Switch
+            checked={positiveExperience}
+            onChange={(checked) => setPositiveExperience(checked)}
+            className="ml-2"
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Public:</label>
-          <input
-            type="checkbox"
-            checked={true} // Default to true
-            className="border p-2 rounded-lg ml-2"
+          <label className="block text-sm font-medium text-gray-700">
+            Public:
+          </label>
+          <Switch
+            checked={isPublic}
+            onChange={(checked) => setIsPublic(checked)}
+            className="ml-2"
           />
         </div>
 
