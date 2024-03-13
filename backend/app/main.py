@@ -13,7 +13,8 @@ from app.database.models import TravelUser, Experience, ImageLink
 from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
 from app.prompting import handle_call
 
-from exceptions import MaxTokenReachedException
+from app.exceptions import MaxTokenReachedException
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -53,39 +54,12 @@ def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
         raise e
 
 
-@app.get("/user/{username}", status_code=200)
-def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
-    try:
-        db_user = db.scalars(select(TravelUser).where(
-            TravelUser.username == username)).first()
-        if not db_user:
-            raise HTTPException(status_code=404, detail="User not found!")
-
-        return db_user
-
-    except Exception as e:
-        raise e
-
-
-@app.post("/posts/experience/user/}", status_code=201)
-def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
-    try:
-        db_experience = Experience(**experience.model_dump())
-        db.add(db_experience)
-        db.commit()
-    except IntegrityError:
-        raise HTTPException(status_code=400, detail="Could not add experience")
-    return db_experience
-
-
 @experience_router.get("/{title}", status_code=200)
 def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         db_experience = db.scalars(select(Experience).where(
             Experience.title == title)).first()
         if not db_experience:
-            raise HTTPException(
-                status_code=404, detail="Experience not found!")
             raise HTTPException(
                 status_code=404, detail="Experience not found!")
 
@@ -96,36 +70,25 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
 
 
 @experience_router.patch("/{title}", status_code=200)
-
-
-@app.patch("/experience/{title}", status_code=200)
-def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
-    try:
-        # Check if the experience exists
-        db_experience = db.query(Experience).filter(
-            Experience.title == title).first()
-        db_experience = db.query(Experience).filter(
-            Experience.title == title).first()
-        if not db_experience:
-            raise HTTPException(
-                status_code=404, detail="Experience not found!")
-            raise HTTPException(
-                status_code=404, detail="Experience not found!")
-
-        # Update only the specified fields
-        for field, value in updated_experience.dict(exclude_unset=True).items():
-            setattr(db_experience, field, value)
-
-        db.commit()
-
-        return db_experience
-
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
+# @app.patch("/experience/{title}", status_code=200)
+# def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
+#     try:
+#         # Check if the experience exists
+#         db_experience = db.query(Experience).filter(
+#             Experience.title == title).first()
+#         db_experience = db.query(Experience).filter(
+#             Experience.title == title).first()
+#         if not db_experience:
+#             raise HTTPException(
+#                 status_code=404, detail="Experience not found!")
+#         # Update only the specified fields
+#         for field, value in updated_experience.dict(exclude_unset=True).items():
+#             setattr(db_experience, field, value)
+#         db.commit()
+#         return db_experience
+#     except Exception as e:
+#         db.rollback()
+#         raise HTTPException(status_code=500, detail=str(e))
 @image_router.post("/", status_code=201)
 async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
@@ -174,4 +137,5 @@ def get_location(search_prompt: str):
     try:
         return handle_call(input=search_prompt)
     except MaxTokenReachedException:
-        raise HTTPException(status_code=400, detail="Please enter less number of characters.")
+        raise HTTPException(
+            status_code=400, detail="Please enter less number of characters.")
