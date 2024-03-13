@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import Search from "./Search";
-import ExpSquare from "../components/ExpShort";
+import ExpSquare from "../components/ExpSquare";
 import Switch from "react-switch";
 
 const UserExperiencePost = ({ onClose, onNewPost }) => {
@@ -217,7 +217,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             Save
           </button>
           <button
-            className="bg-red-500 text-white p-2 rounded-md hover:text-gray-700 "
+            className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 "
             onClick={onClose}
           >
             Close

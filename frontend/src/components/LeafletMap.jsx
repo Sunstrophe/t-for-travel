@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import Search from "./Search";
-import ExpShort from "../components/ExpShort";
+import ExpSquare from "../components/ExpSquare";
 
 const LeafletMap = ({ onSearch, selectedImage }) => {
   const mapRef = useRef(null);
@@ -12,15 +11,17 @@ const LeafletMap = ({ onSearch, selectedImage }) => {
     handleSearch(markerPosition[0], markerPosition[1]);
   }, [selectedImage]);
 
-  const handleSearch = (lat, lon) => {
-    onSearch(lat, lon);
-    setMarkerPosition([lat, lon]);
-
+  useEffect(() => {
     const map = mapRef.current;
 
     if (map) {
-      map.setView([lat, lon], 14);
+      map.setView(markerPosition, 14);
     }
+  }, [markerPosition]);
+
+  const handleSearch = (lat, lon) => {
+    onSearch(lat, lon);
+    setMarkerPosition([lat, lon]);
   };
 
   return (
@@ -32,12 +33,8 @@ const LeafletMap = ({ onSearch, selectedImage }) => {
           url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
         />
 
-        {/* Custom marker using ExpShort component */}
-        <Marker position={markerPosition}>
-          <Popup>
-            <ExpShort image={selectedImage} />
-          </Popup>
-        </Marker>
+        {/* Custom component directly rendered on the map */}
+        <ExpSquare image={selectedImage ? URL.createObjectURL(selectedImage) : ""} position={markerPosition} />
       </MapContainer>
     </div>
   );
