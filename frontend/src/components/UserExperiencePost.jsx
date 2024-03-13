@@ -1,14 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import LeafletMap from './LeafletMap';
 
 const UserExperiencePost = ({ onClose, onNewPost }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  const [positiveExperience, setPositiveExperience] = useState(true); // Default to true
+  const [isPublic, setIsPublic] = useState(true); // Default to true
   const modalContentRef = useRef(null);
 
   useEffect(() => {
     adjustModalPosition();
-  }, [title, description, selectedImage]);
+  }, [title, description, selectedImage, isMapVisible]);
 
   const adjustModalPosition = () => {
     const contentHeight = modalContentRef.current.clientHeight;
@@ -54,11 +60,24 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
     }
   };
 
+  const handleToggleMap = () => {
+    setIsMapVisible(!isMapVisible);
+  };
+
+  const handleSearch = (lat, lon) => {
+    setLatitude(lat);
+    setLongitude(lon);
+  };
+
   const handleSave = () => {
     const newPost = {
       title,
       description,
       image: selectedImage,
+      latitude,
+      longitude,
+      positiveExperience,
+      isPublic,
     };
 
     onNewPost(newPost);
@@ -66,6 +85,11 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
     setTitle('');
     setDescription('');
     setSelectedImage(null);
+    setIsMapVisible(false);
+    setLatitude(null);
+    setLongitude(null);
+    setPositiveExperience(true); // Reset to default
+    setIsPublic(true); // Reset to default
   };
 
   return (
@@ -119,6 +143,67 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
           </div>
         )}
 
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Select Location:</label>
+          <button
+            className="w-1/2 border p-2 rounded-lg"
+            onClick={handleToggleMap}
+          >
+            {isMapVisible ? 'Hide Map' : 'Show Map'}
+          </button>
+          {isMapVisible && <LeafletMap onSearch={handleSearch} />}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Positive Experience?</label>
+          <div className="flex items-center mt-2">
+            <input
+              type="radio"
+              id="positiveYes"
+              name="positiveExperience"
+              value="true"
+              checked={positiveExperience}
+              onChange={() => setPositiveExperience(true)}
+            />
+            <label htmlFor="positiveYes" className="ml-2">Yes</label>
+            <input
+              type="radio"
+              id="positiveNo"
+              name="positiveExperience"
+              value="false"
+              checked={!positiveExperience}
+              onChange={() => setPositiveExperience(false)}
+              className="ml-4"
+            />
+            <label htmlFor="positiveNo" className="ml-2">No</label>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Public?</label>
+          <div className="flex items-center mt-2">
+            <input
+              type="radio"
+              id="publicYes"
+              name="isPublic"
+              value="true"
+              checked={isPublic}
+              onChange={() => setIsPublic(true)}
+            />
+            <label htmlFor="publicYes" className="ml-2">Yes</label>
+            <input
+              type="radio"
+              id="publicNo"
+              name="isPublic"
+              value="false"
+              checked={!isPublic}
+              onChange={() => setIsPublic(false)}
+              className="ml-4"
+            />
+            <label htmlFor="publicNo" className="ml-2">No</label>
+          </div>
+        </div>
+
         <div className="flex justify-between">
           <button
             className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
@@ -127,7 +212,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             Save
           </button>
           <button
-            className="bg-red-500 text-white p-2 rounded-md hover:text-gray-700 "
+            className="bg-red-500 text-white p-2 rounded-md hover:text-gray-700"
             onClick={onClose}
           >
             Close
