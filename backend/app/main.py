@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, APIRouter,  HTTPException, Depends, status
+from fastapi import FastAPI, UploadFile, File, APIRouter,  HTTPException, Depends, status
 from app.db_setup import init_db, get_db
 from contextlib import asynccontextmanager
 from fastapi import Request
@@ -9,11 +9,8 @@ import os
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
-from app.database.models import TravelUser
-from app.database.models import Experience
-from app.schemas import TravelUserSchema
-from app.schemas import ExperienceSchema
-from app.schemas import ExperienceUpdateSchema
+from app.database.models import TravelUser, Experience, ImageLink
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
 from app.prompting import handle_call
 
 from exceptions import MaxTokenReachedException
@@ -24,11 +21,14 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-router = APIRouter()
-IMAGEDIR = "images/"
+user_router = APIRouter()
+experience_router = APIRouter()
+image_router = APIRouter()
+# Works with local directory eg. C:/User/{username}/Pictures/test/
+IMAGEDIR = "E:/test/"
 
 
-@app.post("/user", status_code=201)
+@user_router.post("/", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
         db_user = TravelUser(**user.model_dump())
@@ -39,7 +39,7 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     return db_user
 
 
-@app.get("/user/{username}", status_code=200)
+@user_router.get("/{username}", status_code=200)
 def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
     try:
         db_user = db.scalars(select(TravelUser).where(
@@ -78,12 +78,14 @@ def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     return db_experience
 
 
-@app.get("/experience/{title}", status_code=200)
+@experience_router.get("/{title}", status_code=200)
 def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         db_experience = db.scalars(select(Experience).where(
             Experience.title == title)).first()
         if not db_experience:
+            raise HTTPException(
+                status_code=404, detail="Experience not found!")
             raise HTTPException(
                 status_code=404, detail="Experience not found!")
 
@@ -93,13 +95,20 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
         raise e
 
 
+@experience_router.patch("/{title}", status_code=200)
+
+
 @app.patch("/experience/{title}", status_code=200)
 def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         # Check if the experience exists
         db_experience = db.query(Experience).filter(
             Experience.title == title).first()
+        db_experience = db.query(Experience).filter(
+            Experience.title == title).first()
         if not db_experience:
+            raise HTTPException(
+                status_code=404, detail="Experience not found!")
             raise HTTPException(
                 status_code=404, detail="Experience not found!")
 
@@ -116,29 +125,48 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# @app.post("/", status_code=201)
-# async def upload_image(file: UploadFile):
-#     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-#     data = file.file
-#     filename = file.filename
-#     filename_splitted = filename.split(".")
-#     file_extension = filename_splitted[-1]
-#     new_img_name = uuid4()
-#     if file_extension not in accepted_img_extensions:
-#         raise HTTPException(status_code=400, detail="Image extension is not supported")
-#     file.filename = f"{new_img_name}.{file_extension}"
-#     contents = await file.read()
-#     with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-#         f.write(contents)
-#     return {"uploaded image: ": file.filename}
 
-# @app.get("/{image_name}", status_code=200)
-# def get_image(image_name: str):
-#     images = os.listdir(IMAGEDIR)
-#     return FileResponse(f"{IMAGEDIR}{image_name}")
+@image_router.post("/", status_code=201)
+async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
+    accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
+    try:
+        for file in files:
+            filename = file.filename
+            filename_splitted = filename.split(".")
+            file_extension = filename_splitted[-1]
+            if file_extension not in accepted_img_extensions:
+                raise HTTPException(
+                    status_code=400, detail="Image extension is not supported")
+            new_img_name = uuid4()
+            file.filename = f"{new_img_name}.{file_extension}"
+            contents = await file.read()
+            with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+                f.write(contents)
+
+    # Uploads to database -> Probably want to move this to experience
+        for i, file in enumerate(files):
+            print(f"Test: {file.filename}")
+            db_file = ImageLinkSchema(image_link=file.filename, order=i)
+            db_image_link = ImageLink(**db_file.model_dump())
+            db.add(db_image_link)
+            db.commit()
+    except Exception as e:
+        # return {"message": "There was an error uploading the file(s)",
+        #         "error": e}
+        raise e
+    return {"uploaded_image(s): ": [file.filename for file in files]}
 
 
-# app.include_router(router, prefix="/images", tags=["images"])
+@image_router.get("/{image_name}", status_code=200)
+def get_image(image_name: str):
+    # images = os.listdir(IMAGEDIR)
+    return FileResponse(f"{IMAGEDIR}{image_name}")
+
+
+app.include_router(user_router, prefix="/user", tags=["user"])
+app.include_router(experience_router, prefix="/experience",
+                   tags=["experience"])
+app.include_router(image_router, prefix="/images", tags=["images"])
 
 
 @app.get("/location", status_code=200)
