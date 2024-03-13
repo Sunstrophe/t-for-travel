@@ -14,7 +14,9 @@ from app.database.models import Experience
 from app.schemas import TravelUserSchema
 from app.schemas import ExperienceSchema
 from app.schemas import ExperienceUpdateSchema
+from app.prompting import handle_call
 
+from exceptions import MaxTokenReachedException
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -63,7 +65,7 @@ def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
 
     except Exception as e:
         raise e
-    
+
 
 @app.post("/posts/experience/user/}", status_code=201)
 def add_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
@@ -82,20 +84,24 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
         db_experience = db.scalars(select(Experience).where(
             Experience.title == title)).first()
         if not db_experience:
-            raise HTTPException(status_code=404, detail="Experience not found!")
+            raise HTTPException(
+                status_code=404, detail="Experience not found!")
 
         return db_experience
 
     except Exception as e:
         raise e
-    
+
+
 @app.patch("/experience/{title}", status_code=200)
 def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
     try:
         # Check if the experience exists
-        db_experience = db.query(Experience).filter(Experience.title == title).first()
+        db_experience = db.query(Experience).filter(
+            Experience.title == title).first()
         if not db_experience:
-            raise HTTPException(status_code=404, detail="Experience not found!")
+            raise HTTPException(
+                status_code=404, detail="Experience not found!")
 
         # Update only the specified fields
         for field, value in updated_experience.dict(exclude_unset=True).items():
@@ -108,29 +114,36 @@ def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-    
 
 
+# @app.post("/", status_code=201)
+# async def upload_image(file: UploadFile):
+#     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
+#     data = file.file
+#     filename = file.filename
+#     filename_splitted = filename.split(".")
+#     file_extension = filename_splitted[-1]
+#     new_img_name = uuid4()
+#     if file_extension not in accepted_img_extensions:
+#         raise HTTPException(status_code=400, detail="Image extension is not supported")
+#     file.filename = f"{new_img_name}.{file_extension}"
+#     contents = await file.read()
+#     with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+#         f.write(contents)
+#     return {"uploaded image: ": file.filename}
 
-@app.post("/", status_code=201)
-async def upload_image(file: UploadFile):
-    accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-    data = file.file
-    filename = file.filename
-    filename_splitted = filename.split(".")
-    file_extension = filename_splitted[-1]
-    new_img_name = uuid4()
-    if file_extension not in accepted_img_extensions:
-        raise HTTPException(status_code=400, detail="Image extension is not supported")
-    file.filename = f"{new_img_name}.{file_extension}"
-    contents = await file.read()
-    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-        f.write(contents)
-    return {"uploaded image: ": file.filename}
+# @app.get("/{image_name}", status_code=200)
+# def get_image(image_name: str):
+#     images = os.listdir(IMAGEDIR)
+#     return FileResponse(f"{IMAGEDIR}{image_name}")
 
-@app.get("/{image_name}", status_code=200)
-def get_image(image_name: str):
-    images = os.listdir(IMAGEDIR)
-    return FileResponse(f"{IMAGEDIR}{image_name}")
 
-app.include_router(router, prefix="/images", tags=["images"])
+# app.include_router(router, prefix="/images", tags=["images"])
+
+
+@app.get("/location", status_code=200)
+def get_location(search_prompt: str):
+    try:
+        return handle_call(input=search_prompt)
+    except MaxTokenReachedException:
+        raise HTTPException(status_code=400, detail="Please enter less number of characters.")
