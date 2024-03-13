@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, APIRouter,  HTTPException, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
 from app.db_setup import init_db, get_db
 from contextlib import asynccontextmanager
 from fastapi import Request
@@ -21,7 +22,23 @@ async def lifespan(app: FastAPI):
     init_db()
     yield
 
+
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "https://localhost",
+    "https://localhost:8000",
+    "https://localhost:5173"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
