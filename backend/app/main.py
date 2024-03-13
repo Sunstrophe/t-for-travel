@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
     init_db()
     yield
 
+
 app = FastAPI(lifespan=lifespan)
 user_router = APIRouter()
 experience_router = APIRouter()
