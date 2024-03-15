@@ -16,6 +16,8 @@ from app.prompting import handle_call
 
 from app.exceptions import MaxTokenReachedException
 
+import app.database.crud as crud
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -46,47 +48,70 @@ image_router = APIRouter()
 IMAGEDIR = "E:/test/"
 
 
+# @user_router.post("/", status_code=201)
+# def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
+#     try:
+#         db_user = TravelUser(**user.model_dump())
+#         db.add(db_user)
+#         db.commit()
+#     except IntegrityError:
+#         raise HTTPException(status_code=400, detail="Could not add user")
+#     return db_user
+
+
+############################################################
+# Users
+############################################################
+
 @user_router.post("/", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
-        db_user = TravelUser(**user.model_dump())
-        db.add(db_user)
-        db.commit()
+        db_user = crud.get_user_by_username(db=db, username=user.username)
+        if db_user:
+            raise HTTPException(
+                status_code=400, detail="Username already exists.")
     except IntegrityError:
-        raise HTTPException(status_code=400, detail="Could not add user")
+        raise HTTPException(status_code=400, detail="Could not add user.")
+    return crud.create_user(db=db, user=user)
+
+
+@user_router.get("/{user_id}", status_code=200)
+def get_user(user_id: int, db: Session = Depends(get_db)) -> TravelUserSchema:
+    db_user = crud.get_user(db=db, user_id=user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found!")
     return db_user
 
 
-@user_router.get("/{username}", status_code=200)
-def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
+@user_router.get("/", status_code=200)
+def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[TravelUserSchema]:
+    users = crud.get_users(db=db, skip=skip, limit=limit)
+    return users
+
+
+############################################################
+# Experiences
+############################################################
+
+@experience_router.post("/", status_code=201)
+def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     try:
-        db_user = db.scalars(select(TravelUser).where(
-            TravelUser.username == username)).first()
-        if not db_user:
-            raise HTTPException(status_code=404, detail="User not found!")
-
-        return db_user
-
-    except Exception as e:
-        raise e
-
-
-@experience_router.get("/{title}", status_code=200)
-def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
-    try:
-        db_experience = db.scalars(select(Experience).where(
-            Experience.title == title)).first()
-        if not db_experience:
-            raise HTTPException(
-                status_code=404, detail="Experience not found!")
-
+        db_experience = crud.create_experience(db=db, experience=experience)
         return db_experience
+    except IntegrityError:
+        raise HTTPException(
+            status_code=400, detail="Could not add experience.")
 
-    except Exception as e:
-        raise e
 
+@experience_router.get("/{experience_id}", status_code=200)
+def get_experience(experience_id: id, db: Session = Depends(get_db)) -> ExperienceSchema:
+    db_experience = crud.get_experience(db=db, experience_id=experience_id)
+    if not db_experience:
+        raise HTTPException(status_code=404, detail="Experience not found!")
+    return db_experience
 
-@experience_router.patch("/{title}", status_code=200)
+#################################################################
+# @experience_router.patch("/{title}", status_code=200)
 # @app.patch("/experience/{title}", status_code=200)
 # def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
 #     try:
@@ -106,6 +131,13 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
 #     except Exception as e:
 #         db.rollback()
 #         raise HTTPException(status_code=500, detail=str(e))
+######################################################################
+
+############################################################
+# Images
+############################################################
+
+
 @image_router.post("/", status_code=201)
 async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
