@@ -58,9 +58,9 @@ def call_for_list(location: dict, activity: str):
     system_input = """
     You are a helpful ai designed to output JSON data.
     The output should be formatted as: {'title': title, 'description': description, 'latitude': latitude, 'longitude': longitude}
-    Please give me five locations within 10km of the following latitude, longitude. Try to keep it relevant to the activity.
-    """
-    prompt_for = f"{location['latitude']}, {location['longitude']}, {activity}"
+    Please give locations within 10km of
+    """ + f"{location['latitude']} and {location['longitude']}"
+    prompt_for = f"Please find me five activities relevant to {activity}"
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         response_format={"type": "json_object"},
