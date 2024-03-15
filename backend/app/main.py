@@ -53,9 +53,9 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
         db_user = crud.get_user_by_username(db=db, username=user.username)
         if db_user:
             raise HTTPException(
-                status_code=400, detail="Username already exists")
+                status_code=400, detail="Username already exists.")
     except IntegrityError:
-        raise HTTPException(status_code=400, detail="Could not add user")
+        raise HTTPException(status_code=400, detail="Could not add user.")
     return crud.create_user(db=db, user=user)
 
 
@@ -77,22 +77,25 @@ def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) ->
 # Experiences
 ############################################################
 
-@experience_router.get("/{title}", status_code=200)
-def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
+@experience_router.post("/", status_code=201)
+def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
     try:
-        db_experience = db.scalars(select(Experience).where(
-            Experience.title == title)).first()
-        if not db_experience:
-            raise HTTPException(
-                status_code=404, detail="Experience not found!")
-
+        db_experience = crud.create_experience(db=db, experience=experience)
         return db_experience
+    except IntegrityError:
+        raise HTTPException(
+            status_code=400, detail="Could not add experience.")
 
-    except Exception as e:
-        raise e
 
+@experience_router.get("/{experience_id}", status_code=200)
+def get_experience(experience_id: id, db: Session = Depends(get_db)) -> ExperienceSchema:
+    db_experience = crud.get_experience(db=db, experience_id=experience_id)
+    if not db_experience:
+        raise HTTPException(status_code=404, detail="Experience not found!")
+    return db_experience
 
-@experience_router.patch("/{title}", status_code=200)
+#################################################################
+# @experience_router.patch("/{title}", status_code=200)
 # @app.patch("/experience/{title}", status_code=200)
 # def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
 #     try:
@@ -112,6 +115,13 @@ def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchem
 #     except Exception as e:
 #         db.rollback()
 #         raise HTTPException(status_code=500, detail=str(e))
+######################################################################
+
+############################################################
+# Images
+############################################################
+
+
 @image_router.post("/", status_code=201)
 async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
