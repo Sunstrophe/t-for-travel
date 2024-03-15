@@ -43,30 +43,39 @@ IMAGEDIR = "E:/test/"
 #     return db_user
 
 
+############################################################
+# Users
+############################################################
+
 @user_router.post("/", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
         db_user = crud.get_user_by_username(db=db, username=user.username)
         if db_user:
-            raise HTTPException(status_code=400, detail="Username already exists")
+            raise HTTPException(
+                status_code=400, detail="Username already exists")
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Could not add user")
     return crud.create_user(db=db, user=user)
 
 
-@user_router.get("/{username}", status_code=200)
-def get_user(username: str, db: Session = Depends(get_db)) -> TravelUserSchema:
-    try:
-        db_user = db.scalars(select(TravelUser).where(
-            TravelUser.username == username)).first()
-        if not db_user:
-            raise HTTPException(status_code=404, detail="User not found!")
+@user_router.get("/{user_id}", status_code=200)
+def get_user(user_id: int, db: Session = Depends(get_db)) -> TravelUserSchema:
+    db_user = crud.get_user(db=db, user_id=user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found!")
+    return db_user
 
-        return db_user
 
-    except Exception as e:
-        raise e
+@user_router.get("/", status_code=200)
+def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[TravelUserSchema]:
+    users = crud.get_users(db=db, skip=skip, limit=limit)
+    return users
 
+
+############################################################
+# Experiences
+############################################################
 
 @experience_router.get("/{title}", status_code=200)
 def get_experience(title: str, db: Session = Depends(get_db)) -> ExperienceSchema:
