@@ -15,6 +15,8 @@ from app.prompting import handle_call
 
 from app.exceptions import MaxTokenReachedException
 
+import app.database.crud as crud
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,15 +32,26 @@ image_router = APIRouter()
 IMAGEDIR = "E:/test/"
 
 
+# @user_router.post("/", status_code=201)
+# def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
+#     try:
+#         db_user = TravelUser(**user.model_dump())
+#         db.add(db_user)
+#         db.commit()
+#     except IntegrityError:
+#         raise HTTPException(status_code=400, detail="Could not add user")
+#     return db_user
+
+
 @user_router.post("/", status_code=201)
 def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
     try:
-        db_user = TravelUser(**user.model_dump())
-        db.add(db_user)
-        db.commit()
+        db_user = crud.get_user_by_username(db=db, username=user.username)
+        if db_user:
+            raise HTTPException(status_code=400, detail="Username already exists")
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Could not add user")
-    return db_user
+    return crud.create_user(db=db, user=user)
 
 
 @user_router.get("/{username}", status_code=200)
