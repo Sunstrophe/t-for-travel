@@ -107,34 +107,24 @@ def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db
 
 
 @experience_router.get("/{experience_id}", status_code=200)
-def get_experience(experience_id: str, db: Session = Depends(get_db)) -> ExperienceSchema:
+def get_experience(experience_id: int, db: Session = Depends(get_db)) -> ExperienceSchema:
     db_experience = crud.get_experience(db=db, experience_id=experience_id)
     if not db_experience:
         raise HTTPException(status_code=404, detail="Experience not found!")
     return db_experience
 
-#################################################################
-# @experience_router.patch("/{title}", status_code=200)
-# @app.patch("/experience/{title}", status_code=200)
-# def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
-#     try:
-#         # Check if the experience exists
-#         db_experience = db.query(Experience).filter(
-#             Experience.title == title).first()
-#         db_experience = db.query(Experience).filter(
-#             Experience.title == title).first()
-#         if not db_experience:
-#             raise HTTPException(
-#                 status_code=404, detail="Experience not found!")
-#         # Update only the specified fields
-#         for field, value in updated_experience.dict(exclude_unset=True).items():
-#             setattr(db_experience, field, value)
-#         db.commit()
-#         return db_experience
-#     except Exception as e:
-#         db.rollback()
-#         raise HTTPException(status_code=500, detail=str(e))
-######################################################################
+
+@experience_router.patch("/{experience_id}", status_code=200)
+def update_experience(experience_id: int, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
+    db_experience = crud.get_experience(db=db, experience_id=experience_id)
+    if not db_experience:
+        raise HTTPException(status_code=404, detail="Experience not found!")
+    try:
+        db_experience = crud.update_experience(
+            db=db, db_experience=db_experience, updated_experience=updated_experience)
+        return db_experience
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 app.include_router(experience_router, prefix="/experience",

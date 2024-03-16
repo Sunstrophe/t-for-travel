@@ -69,13 +69,14 @@ class ExperienceUpdateSchema(BaseModel):
                                  description="The name of the experience.")
     description: Optional[str] = Field(None, min_length=3, max_length=255,
                                        description="The description of the experience.")
-    country_id: Optional[int] = Field(
-        None, description="id for which country it is in")
+    image: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     is_positive: Optional[bool] = None
     is_public: Optional[bool] = None
 
+    # country_id: Optional[int] = Field(
+    #     None, description="id for which country it is in")
 
 # class ImageLinkSchema(BaseModel):
 #     image_link: str

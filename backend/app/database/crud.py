@@ -35,3 +35,12 @@ def create_experience(db: Session, experience: schemas.ExperienceSchema):
 
 def get_experience(db: Session, experience_id: int):
     return db.query(models.Experience).filter(models.Experience.id == experience_id).first()
+
+
+def update_experience(db: Session, db_experience: models.Experience, updated_experience: schemas.ExperienceUpdateSchema):
+    for field, value in updated_experience.model_dump(exclude_unset=True).items():
+        setattr(db_experience, field, value)
+    db.commit()
+    db.refresh(db_experience)
+    print("test")
+    return db_experience
