@@ -43,12 +43,13 @@ class Experience(Base):
     __tablename__ = "experience"
 
     title: Mapped[str] = mapped_column(String(255))
-    description: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str] = mapped_column(String(255), nullable=True)
     # country: Mapped["Country"] = relationship(
     #     "Country", back_populates="users")
     # country_id: Mapped[int] = mapped_column(ForeignKey(
     #     "country.id", ondelete="SET NULL"), nullable=True)
-    images: Mapped[list["ImageLink"]] = relationship("ImageLink", back_populates="experience")
+    # images: Mapped[list["ImageLink"]] = relationship("ImageLink", back_populates="experience")
+    image: Mapped[str] = mapped_column(String(255), nullable=True)
     latitude: Mapped[float]
     longitude: Mapped[float]
     is_positive: Mapped[bool]
@@ -58,14 +59,14 @@ class Experience(Base):
         return f"<Experience={self.title}>"
 
 
-class ImageLink(Base):
-    __tablename__ = "images"
+# class ImageLink(Base):
+#     __tablename__ = "images"
 
-    experience: Mapped[Experience] = relationship("Experience", back_populates="images")
-    experience_id: Mapped[int] = mapped_column(ForeignKey(
-        "experience.id", ondelete="SET NULL"), nullable=True)
-    image_link: Mapped[str] = mapped_column(String(255))
-    order: Mapped[int] = mapped_column(Integer, autoincrement=True)
-    date_added: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+#     experience: Mapped[Experience] = relationship("Experience", back_populates="images")
+#     experience_id: Mapped[int] = mapped_column(ForeignKey(
+#         "experience.id", ondelete="SET NULL"), nullable=True)
+#     image_link: Mapped[str] = mapped_column(String(255))
+#     order: Mapped[int] = mapped_column(Integer, autoincrement=True)
+#     date_added: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
-    __table_args__ = (UniqueConstraint("experience_id", "order"), )
+#     __table_args__ = (UniqueConstraint("experience_id", "order"), )

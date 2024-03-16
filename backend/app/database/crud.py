@@ -1,8 +1,8 @@
 
 from sqlalchemy.orm import Session
 
-import models
-from .. import schemas
+from app.database import models
+from app import schemas
 
 
 def get_user(db: Session, user_id: int):
@@ -29,7 +29,7 @@ def create_experience(db: Session, experience: schemas.ExperienceSchema):
     db_experience = models.Experience(**experience.model_dump())
     db.add(db_experience)
     db.commit()
-    db.refresh()
+    db.refresh(db_experience)
     return db_experience
 
 

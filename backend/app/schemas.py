@@ -41,20 +41,21 @@ class ExperienceSchema(BaseModel):
     description: str = Field(..., min_length=3, max_length=255,
                              description="The description of the experience.",
                              )
-    country_id: int = Field(..., description="id for which country it is in")
+    # country_id: int = Field(..., description="id for which country it is in")
+    image: str | None = None
     latitude: float
     longitude: float
-    images: list["ImageLinkSchema"] | None = []
-    # picture:  associate picture with an id?
     is_positive: bool | None = True
     is_public: bool | None = True
+    # images: list["ImageLinkSchema"] | None = []
+    # picture:  associate picture with an id?
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={
             "example": {
                 "title": "Vetekatten",
                 "description": "A lovely place for a fika, I can highly recommend it!",
-                "country_id": 1,
+                "image": None,
                 "latitude": 59.3342,
                 "longitude": 18.0586,
                 "is_positive": True,
@@ -76,13 +77,13 @@ class ExperienceUpdateSchema(BaseModel):
     is_public: Optional[bool] = None
 
 
-class ImageLinkSchema(BaseModel):
-    image_link: str
-    order: int
+# class ImageLinkSchema(BaseModel):
+#     image_link: str
+#     order: int
 
-    model_config = ConfigDict(from_attributes=True, json_schema_extra={
-        "example": {
-            "image_link": "https://example.com/images/001",
-            "order": 1
-        }
-    })
+#     model_config = ConfigDict(from_attributes=True, json_schema_extra={
+#         "example": {
+#             "image_link": "https://example.com/images/001",
+#             "order": 1
+#         }
+#     })

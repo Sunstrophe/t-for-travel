@@ -1,7 +1,7 @@
 from openai import OpenAI
 from os import getenv
 from dotenv import load_dotenv
-from exceptions import MaxTokenReachedException, InvalidFormatException
+from app.exceptions import MaxTokenReachedException, InvalidFormatException
 
 load_dotenv()
 

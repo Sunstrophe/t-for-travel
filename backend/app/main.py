@@ -10,9 +10,9 @@ import os
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
-from app.database.models import TravelUser, Experience, ImageLink
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
-from app.prompting import handle_call
+# from app.database.models import TravelUser, Experience
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema
+from app.prompting import call_for_location
 
 from app.exceptions import MaxTokenReachedException
 
@@ -89,9 +89,12 @@ def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) ->
     return users
 
 
+app.include_router(user_router, prefix="/user", tags=["user"])
+
 ############################################################
 # Experiences
 ############################################################
+
 
 @experience_router.post("/", status_code=201)
 def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
@@ -104,7 +107,7 @@ def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db
 
 
 @experience_router.get("/{experience_id}", status_code=200)
-def get_experience(experience_id: id, db: Session = Depends(get_db)) -> ExperienceSchema:
+def get_experience(experience_id: str, db: Session = Depends(get_db)) -> ExperienceSchema:
     db_experience = crud.get_experience(db=db, experience_id=experience_id)
     if not db_experience:
         raise HTTPException(status_code=404, detail="Experience not found!")
@@ -133,58 +136,59 @@ def get_experience(experience_id: id, db: Session = Depends(get_db)) -> Experien
 #         raise HTTPException(status_code=500, detail=str(e))
 ######################################################################
 
+
+app.include_router(experience_router, prefix="/experience",
+                   tags=["experience"])
+
 ############################################################
 # Images
 ############################################################
 
 
-@image_router.post("/", status_code=201)
-async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
-    accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-    try:
-        for file in files:
-            filename = file.filename
-            filename_splitted = filename.split(".")
-            file_extension = filename_splitted[-1]
-            if file_extension not in accepted_img_extensions:
-                raise HTTPException(
-                    status_code=400, detail="Image extension is not supported")
-            new_img_name = uuid4()
-            file.filename = f"{new_img_name}.{file_extension}"
-            contents = await file.read()
-            with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-                f.write(contents)
+# @image_router.post("/", status_code=201)
+# async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
+#     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
+#     try:
+#         for file in files:
+#             filename = file.filename
+#             filename_splitted = filename.split(".")
+#             file_extension = filename_splitted[-1]
+#             if file_extension not in accepted_img_extensions:
+#                 raise HTTPException(
+#                     status_code=400, detail="Image extension is not supported")
+#             new_img_name = uuid4()
+#             file.filename = f"{new_img_name}.{file_extension}"
+#             contents = await file.read()
+#             with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+#                 f.write(contents)
 
-    # Uploads to database -> Probably want to move this to experience
-        for i, file in enumerate(files):
-            print(f"Test: {file.filename}")
-            db_file = ImageLinkSchema(image_link=file.filename, order=i)
-            db_image_link = ImageLink(**db_file.model_dump())
-            db.add(db_image_link)
-            db.commit()
-    except Exception as e:
-        # return {"message": "There was an error uploading the file(s)",
-        #         "error": e}
-        raise e
-    return {"uploaded_image(s): ": [file.filename for file in files]}
-
-
-@image_router.get("/{image_name}", status_code=200)
-def get_image(image_name: str):
-    # images = os.listdir(IMAGEDIR)
-    return FileResponse(f"{IMAGEDIR}{image_name}")
+#     # Uploads to database -> Probably want to move this to experience
+#         for i, file in enumerate(files):
+#             print(f"Test: {file.filename}")
+#             db_file = ImageLinkSchema(image_link=file.filename, order=i)
+#             db_image_link = ImageLink(**db_file.model_dump())
+#             db.add(db_image_link)
+#             db.commit()
+#     except Exception as e:
+#         # return {"message": "There was an error uploading the file(s)",
+#         #         "error": e}
+#         raise e
+#     return {"uploaded_image(s): ": [file.filename for file in files]}
 
 
-app.include_router(user_router, prefix="/user", tags=["user"])
-app.include_router(experience_router, prefix="/experience",
-                   tags=["experience"])
-app.include_router(image_router, prefix="/images", tags=["images"])
+# @image_router.get("/{image_name}", status_code=200)
+# def get_image(image_name: str):
+#     # images = os.listdir(IMAGEDIR)
+#     return FileResponse(f"{IMAGEDIR}{image_name}")
+
+
+app.include_router(image_router, prefix="/image", tags=["image"])
 
 
 @app.get("/location", status_code=200)
 def get_location(search_prompt: str):
     try:
-        return handle_call(input=search_prompt)
+        return call_for_location(input=search_prompt)
     except MaxTokenReachedException:
         raise HTTPException(
             status_code=400, detail="Please enter less number of characters.")
