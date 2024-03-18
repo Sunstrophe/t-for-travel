@@ -1,6 +1,4 @@
-
 from sqlalchemy.orm import Session
-
 from app.database import models
 from app import schemas
 
@@ -44,3 +42,4 @@ def update_experience(db: Session, db_experience: models.Experience, updated_exp
     db.refresh(db_experience)
     print("test")
     return db_experience
+

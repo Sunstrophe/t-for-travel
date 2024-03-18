@@ -44,8 +44,6 @@ app.add_middleware(
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
-# Works with local directory eg. C:/User/{username}/Pictures/test/
-IMAGEDIR = "E:/test/"
 
 
 # @user_router.post("/", status_code=201)
@@ -134,42 +132,41 @@ app.include_router(experience_router, prefix="/experience",
 # Images
 ############################################################
 
-
-# @image_router.post("/", status_code=201)
-# async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
-#     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-#     try:
-#         for file in files:
-#             filename = file.filename
-#             filename_splitted = filename.split(".")
-#             file_extension = filename_splitted[-1]
-#             if file_extension not in accepted_img_extensions:
-#                 raise HTTPException(
-#                     status_code=400, detail="Image extension is not supported")
-#             new_img_name = uuid4()
-#             file.filename = f"{new_img_name}.{file_extension}"
-#             contents = await file.read()
-#             with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-#                 f.write(contents)
-
-#     # Uploads to database -> Probably want to move this to experience
-#         for i, file in enumerate(files):
-#             print(f"Test: {file.filename}")
-#             db_file = ImageLinkSchema(image_link=file.filename, order=i)
-#             db_image_link = ImageLink(**db_file.model_dump())
-#             db.add(db_image_link)
-#             db.commit()
-#     except Exception as e:
-#         # return {"message": "There was an error uploading the file(s)",
-#         #         "error": e}
-#         raise e
-#     return {"uploaded_image(s): ": [file.filename for file in files]}
+# Works with local directory eg. C:/User/{username}/Pictures/test/
+IMAGEDIR = "E:/test/"
 
 
-# @image_router.get("/{image_name}", status_code=200)
-# def get_image(image_name: str):
-#     # images = os.listdir(IMAGEDIR)
-#     return FileResponse(f"{IMAGEDIR}{image_name}")
+@image_router.post("/", status_code=201)
+async def upload_image(file: UploadFile):
+    print(file.size)
+    if file.size > 1000000:
+        raise HTTPException(status_code=413, detail="Size of image to large")
+    accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
+    filename = file.filename
+    filename_splitted = filename.split(".")
+    file_extension = filename_splitted[-1]
+    if file_extension not in accepted_img_extensions:
+        raise HTTPException(
+            status_code=415, detail="Image extension is not supported")
+    new_img_name = uuid4()
+    file.filename = f"{new_img_name}.{file_extension}"
+    contents = await file.read()
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+    return {"filename": file.filename}
+
+
+@image_router.delete("/", status_code=200)
+async def delete_image(filename: str):
+    if os.path.exists(f"{IMAGEDIR}{filename}"):
+        os.remove(f"{IMAGEDIR}{filename}")
+        return {"file deleted": filename}
+    raise HTTPException(status_code=404, detail=f"{filename} not found")
+
+
+@image_router.get("/{image_name}", status_code=200)
+def get_image(image_name: str):
+    return FileResponse(f"{IMAGEDIR}{image_name}")
 
 
 app.include_router(image_router, prefix="/image", tags=["image"])
