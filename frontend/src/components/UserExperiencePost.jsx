@@ -5,6 +5,7 @@ import Search from "./Search";
 import ExpSquare from "../components/ExpSquare";
 import Switch from "react-switch";
 
+
 const UserExperiencePost = ({ onClose, onNewPost }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

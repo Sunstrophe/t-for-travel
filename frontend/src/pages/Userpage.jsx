@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import useAuthStore from "src/stores/store";
 import UserExperiencePost from "../components/UserExperiencePost";
 
+
 function Userpage() {
+  const userData = useAuthStore((state) => state.userData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
@@ -54,7 +57,7 @@ function Userpage() {
           </div>
           <div className="col-span-4 sm:col-span-9">
             <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-xl font-bold">Username</h2>
+              <h2 className="text-xl font-bold">Welcome {userData.first_name}</h2>
               <button
                 className="border border-gray-700 p-6 my-4 mx-4 rounded-md uppercase font-light hover:font-bold hover:bg-gray-100"
                 onClick={handleOpenModal}
