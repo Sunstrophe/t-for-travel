@@ -13,6 +13,7 @@ class TravelUserSchema(BaseModel):
                            description="Last name of user")
     email: EmailStr = Field(..., min_length=1, max_length=255,
                             description="The email for the user")
+    hashed_password: str
     # password: SecretStr = Field(..., min_length=8, max_length=255)
     country_id: int = Field(
         ..., description="id for whatever country the user has set for their account")
@@ -33,6 +34,14 @@ class TravelUserSchema(BaseModel):
             }
         }
     )
+
+
+class TravelUserOutSchema(BaseModel):
+    id: int
+    email: EmailStr
+    last_name: str
+    first_name: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ExperienceSchema(BaseModel):

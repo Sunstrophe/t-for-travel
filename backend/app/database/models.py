@@ -26,6 +26,8 @@ class TravelUser(Base):
 
     def __repr__(self) -> str:
         return f"<User={self.username}>"
+    
+
 
 
 class Country(Base):
