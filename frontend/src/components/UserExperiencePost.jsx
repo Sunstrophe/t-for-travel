@@ -69,6 +69,21 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
   };
 
   const handleSave = () => {
+    // Make backend call here
+    try {
+      fetch("http://127.0.0.1/image",
+      {
+        method: "POST",
+        body: selectedImage
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+    }
+    catch (error) {
+      console.error("Error uploading file", error)
+    }
+
+
     const newPost = {
       title,
       description,
@@ -77,9 +92,11 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
       positiveExperience,
       isPublic,
     };
-
+    
     onNewPost(newPost);
-
+    
+    // Then make it make a call for fetch all our posts on the side
+    
     setTitle("");
     setDescription("");
     setSelectedImage(null);
@@ -104,7 +121,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
+        <h2 className="mb-4 text-2xl font-bold">Create a New Post</h2>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
@@ -114,7 +131,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             type="text"
             value={title}
             onChange={handleTitleChange}
-            className="w-1/2 border p-2 rounded-lg mb-2"
+            className="w-1/2 p-2 mb-2 border rounded-lg"
             placeholder="Enter the title of your post"
           />
         </div>
@@ -126,7 +143,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
           <textarea
             value={description}
             onChange={handleDescriptionChange}
-            className="w-1/2 border p-2 rounded-lg"
+            className="w-1/2 p-2 border rounded-lg"
             placeholder="Enter the description of your post"
           />
         </div>
@@ -138,9 +155,9 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
           <input
             type="file"
             onChange={handleImageUpload}
-            className="w-1/2 border p-2 rounded-lg"
+            className="w-1/2 p-2 border rounded-lg"
           />
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="mt-2 text-sm text-gray-500">
             - or drag and drop an image here -
           </p>
         </div>
@@ -150,7 +167,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             <img
               src={URL.createObjectURL(selectedImage)}
               alt="Selected"
-              className="w-full h-48 object-cover rounded-lg"
+              className="object-cover w-full h-48 rounded-lg"
             />
           </div>
         )}
@@ -161,7 +178,7 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
           </label>
           <div className="flex items-center">
             <button
-              className="w-1/2 border p-2 rounded-lg"
+              className="w-1/2 p-2 border rounded-lg"
               onClick={handleToggleMap}
             >
               {isMapVisible ? "Hide Map" : "Show Map"}
@@ -211,13 +228,13 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
 
         <div className="flex justify-between">
           <button
-            className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+            className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600"
             onClick={handleSave}
           >
             Save
           </button>
           <button
-            className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 "
+            className="p-2 text-white bg-red-500 rounded-md hover:bg-red-600"
             onClick={onClose}
           >
             Close

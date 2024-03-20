@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Cookies from "./pages/Cookies";
 import Signup from "./pages/Signup";
 import Userpage from "./pages/Userpage";
+import "leaflet/dist/leaflet.css"
 
 
 function App() {
