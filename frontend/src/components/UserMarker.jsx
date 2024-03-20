@@ -1,18 +1,30 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Marker, useMap } from "react-leaflet";
 
-function UserMarker() {
-    const [position, setPosition] = useState([50,50]);
-    const map = useMap();
+function UserMarker({ map }) {
+    const [position, setPosition] = useState(() => map.getCenter());
 
-    
+    const onClick = useCallback(() => {
+        map.setView(center, zoom);
+    }, [map]);
 
-    console.log(map.getCenter())
-    // setPosition(map.getCenter())
+    const onMove = useCallback(() => {
+        setPosition(map.getCenter());
+    }, [map]);
 
-    console.log("Render UserMarker");
+    useEffect(() => {
+        map.on("move", onMove);
+        return () => {
+            map.off("move", onMove);
+        };
+    }, [map, onMove]);
 
-    return <Marker position={position}></Marker>;
+    return (
+            // <p>
+            //     latitude: {position.lat.toFixed(4)}, longitude: {position.lng.toFixed(4)} <button onClick={onClick}>reset</button>
+            // </p>
+            <Marker position={position} />
+    );
 }
 
 export default UserMarker;

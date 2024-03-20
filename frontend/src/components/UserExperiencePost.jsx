@@ -1,22 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import Search from "./Search";
 import Switch from "react-switch";
 import UserMarker from "./UserMarker";
 
-const sthlmCenter = [59.3342, 18.0586]
+const sthlmCenter = [59.3342, 18.0586];
 
-
-const UserExperiencePost = ({ onClose, onNewPost }) => {
+function UserExperiencePost({ onClose, onNewPost }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [isMapVisible, setIsMapVisible] = useState(false);
-    const [position, setPosition] = useState(sthlmCenter); // Default coordinates
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
-    // const [markerPosition, setMarkerPosition] = useState(null)
-    const [map, setMap] = useState(null)
+    const [marker, setMarker] = useState(null)
+    const [map, setMap] = useState(null);
+    const [position, setPosition] = useState(sthlmCenter);
 
     const modalContentRef = useRef(null);
 
@@ -109,18 +108,15 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
         // Close the modal
         onClose();
     };
-
-    const handleSearch = (lat, lon) => {
-        setCoordinates([lat, lon]);
+    
+    const handleMarker = () => {
+        console.log(map.getCenter());
+        setPosition(map.getCenter())
     };
 
-    const handleTest = () => {
-      console.log(map.getCenter())
-    }
-
-    useEffect (() => {
-      
-    }, [map])
+    // const handleMarkerPos = () => {
+    //     console.log(marker.getLatLng())
+    // }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-50">
@@ -178,22 +174,24 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
                     </div>
                     {isMapVisible && (
                         <div>
-                          <MapContainer
-                            center={position}
-                            zoom={14}
-                            style={{ height: "300px", marginTop: "10px" }}
-                            ref={setMap}>
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-                            />
-                            { map ? (<Marker position={map.getCenter()}/>) : <p>Loading...</p>}
-                            {/* <UserMarker /> */}
-                            
-                          </MapContainer>
-                          <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleTest}>
-                            test
-                          </button>
+                            <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleMarker}>
+                                Center marker
+                            </button>
+                            {/* <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleMarkerPos}>
+                                Marker pos
+                            </button> */}
+                            <MapContainer
+                                center={sthlmCenter}
+                                zoom={14}
+                                style={{ height: "300px", marginTop: "10px" }}
+                                ref={setMap}
+                            >
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+                                />
+                                {map ? <Marker draggable={true} position={position} ref={setMarker} /> : <p>Loading...</p>}
+                            </MapContainer>
                         </div>
                     )}
                 </div>
@@ -223,6 +221,6 @@ const UserExperiencePost = ({ onClose, onNewPost }) => {
             </div>
         </div>
     );
-};
+}
 
 export default UserExperiencePost;
