@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import React, { useState, useRef, useEffect } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 import Search from "./Search";
 import Switch from "react-switch";
 import UserMarker from "./UserMarker";
@@ -10,6 +10,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
+    const [imageName, setImageName] = useState(null);
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
@@ -21,7 +22,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
 
     useEffect(() => {
         adjustModalPosition();
-    }, [title, description, selectedImage]);
+    }, []);
 
     const adjustModalPosition = () => {
         const contentHeight = modalContentRef.current.clientHeight;
@@ -73,27 +74,64 @@ function UserExperiencePost({ onClose, onNewPost }) {
 
     const handleSave = () => {
         // Make backend call here
-        try {
-            fetch("http://127.0.0.1/image", {
-                method: "POST",
-                body: selectedImage,
-            })
+        let imageName = null
+        if (selectedImage !== null){
+            try {
+                const formData = new FormData()
+                formData.append("file", selectedImage)
+
+                fetch("http://127.0.0.1:8000/image", {
+                    method: "POST",
+                    body: formData,
+                })
                 .then((response) => response.json())
-                .then((data) => console.log(data));
-        } catch (error) {
-            console.error("Error uploading file", error);
+                .then((data) => {
+                    imageName = data["filename"]
+                    console.log(data); 
+                }
+                );
+            } catch (error) {
+                console.error("Error uploading file", error);
+            }
         }
 
-        const newPost = {
-            title,
-            description,
-            image: selectedImage,
-            coordinates,
-            positiveExperience,
-            isPublic,
-        };
+        console.log(imageName)
+        
+        // ---------------------------------------------------
 
-        onNewPost(newPost);
+        // if (map === null) {
+        //     var lat = null;
+        //     var lng = null;
+        // } else {
+        //     var lat = map.getCenter()["lat"];
+        //     var lng = map.getCenter()["lng"];
+        // }
+
+        // const newPost = {
+        //     title: title,
+        //     description: description,
+        //     image: null,
+        //     latitude: lat,
+        //     longitude: lng,
+        //     is_positive: positiveExperience,
+        //     is_public: isPublic,
+        // };
+        
+        // try {
+        //     fetch("http://127.0.0.1:8000/experience", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify(newPost),
+        //     });
+        // } catch (error) {
+        //     console.error("Error posting experience", error);
+        // }
+
+        // --------------------------------------------
+
+        // onNewPost(newPost);
 
         // Then make it make a call for fetch all our posts on the side
 
@@ -101,23 +139,19 @@ function UserExperiencePost({ onClose, onNewPost }) {
         setDescription("");
         setSelectedImage(null);
         setIsMapVisible(false); // Close the map when saving
-        setCoordinates([59.31, 18.07]); // Reset coordinates to default
+        // setCoordinates([59.31, 18.07]); // Reset coordinates to default
         setPositiveExperience(true);
         setIsPublic(true);
 
         // Close the modal
-        onClose();
+        onClose;
     };
 
-    const handleMarker = () => {
+    const handleMarkerPos = () => {
+        console.log(map);
         console.log(map.getCenter());
-        setPosition(map.getCenter());
+        console.log(map.getCenter()["lat"]);
     };
-
-    // const handleMarkerPos = () => {
-    //     console.log(marker.getLatLng())
-    // }
-
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-50">
@@ -177,13 +211,10 @@ function UserExperiencePost({ onClose, onNewPost }) {
                         <div>
                             <button
                                 className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600"
-                                onClick={handleMarker}
+                                onClick={handleMarkerPos}
                             >
-                                Center marker
-                            </button>
-                            {/* <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleMarkerPos}>
                                 Marker pos
-                            </button> */}
+                            </button>
                             <MapContainer
                                 center={sthlmCenter}
                                 zoom={14}
