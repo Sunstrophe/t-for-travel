@@ -13,7 +13,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
-    const [marker, setMarker] = useState(null)
+    const [marker, setMarker] = useState(null);
     const [map, setMap] = useState(null);
     const [position, setPosition] = useState(sthlmCenter);
 
@@ -108,15 +108,16 @@ function UserExperiencePost({ onClose, onNewPost }) {
         // Close the modal
         onClose();
     };
-    
+
     const handleMarker = () => {
         console.log(map.getCenter());
-        setPosition(map.getCenter())
+        setPosition(map.getCenter());
     };
 
     // const handleMarkerPos = () => {
     //     console.log(marker.getLatLng())
     // }
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-50">
@@ -174,7 +175,10 @@ function UserExperiencePost({ onClose, onNewPost }) {
                     </div>
                     {isMapVisible && (
                         <div>
-                            <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleMarker}>
+                            <button
+                                className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+                                onClick={handleMarker}
+                            >
                                 Center marker
                             </button>
                             {/* <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleMarkerPos}>
@@ -190,7 +194,8 @@ function UserExperiencePost({ onClose, onNewPost }) {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
                                 />
-                                {map ? <Marker draggable={true} position={position} ref={setMarker} /> : <p>Loading...</p>}
+                                {/* {map ? <Marker draggable={true} position={position} ref={setMarker} /> : <p>Loading...</p>} */}
+                                <UserMarker />
                             </MapContainer>
                         </div>
                     )}
