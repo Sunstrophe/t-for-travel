@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function EmailRegisterForm() {
+export default function SignupForm() {
 let navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -15,6 +15,9 @@ let navigate = useNavigate();
 
   const [lastName, setLastName] = useState("");
   const [lastNameError, setLastNameError] = useState([]);
+
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState([]);
 
   const [terms, setTerms] = useState(false);
   const [termsError, setTermsError] = useState("");
@@ -62,9 +65,17 @@ let navigate = useNavigate();
     setLastNameError(errors);
   }
 
+  function validateUsername() {
+    let errors = [];
+    if (!lastName) {
+      errors.push("Username is required");
+    }
+    setUsernameError(errors);
+  }
+
   function validateTerms() {
     if (!terms) {
-      setTermsError("You must accept our terms, OR ELSE!");
+      setTermsError("You must accept our terms to continue");
     } else {
       setTermsError("");
     }
@@ -76,6 +87,7 @@ let navigate = useNavigate();
     validatePassword();
     validateFirstName();
     validateLastName();
+    validateUsername();
     validateTerms();
 
     if (
@@ -83,6 +95,7 @@ let navigate = useNavigate();
       passwordError.length === 0 &&
       firstNameError.length === 0 &&
       lastNameError.length === 0 &&
+      usernameError.length === 0 &&
       !termsError
     ) {
       try {
@@ -98,6 +111,7 @@ let navigate = useNavigate();
               first_name: firstName,
               last_name: lastName,
               hashed_password: password,
+              username: username,
             }),
           }
         );
@@ -206,6 +220,34 @@ let navigate = useNavigate();
                   ))}
                 </div>
               </div>
+              
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Username
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="username"
+                    required
+                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onBlur={validateUsername}
+                  />
+                  {usernameError.map((error, index) => (
+                    <p key={index} className="mt-2 text-sm text-red-600">
+                      {error}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
 
               <div>
                 <label
@@ -233,6 +275,9 @@ let navigate = useNavigate();
                   ))}
                 </div>
               </div>
+              
+              
+
 
               <div className="flex items-center">
                 <input

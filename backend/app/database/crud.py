@@ -1,7 +1,7 @@
 
 from sqlalchemy.orm import Session
 
-import models
+from . import models
 from .. import schemas
 
 

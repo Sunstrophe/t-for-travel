@@ -7,12 +7,14 @@ from fastapi.responses import FileResponse
 from uuid import uuid4
 import os
 
-from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
 from app.database.models import TravelUser, Experience, ImageLink
 from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
-from app.prompting import handle_call
+from app.prompting import call_for_location
+from app.auth_endpoints import router as auth_router
+from app.security import get_current_user
 
 from app.exceptions import MaxTokenReachedException
 
@@ -41,6 +43,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
@@ -104,7 +107,7 @@ def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db
 
 
 @experience_router.get("/{experience_id}", status_code=200)
-def get_experience(experience_id: id, db: Session = Depends(get_db)) -> ExperienceSchema:
+def get_experience(experience_id: int, db: Session = Depends(get_db)) -> ExperienceSchema:
     db_experience = crud.get_experience(db=db, experience_id=experience_id)
     if not db_experience:
         raise HTTPException(status_code=404, detail="Experience not found!")
@@ -184,7 +187,7 @@ app.include_router(image_router, prefix="/images", tags=["images"])
 @app.get("/location", status_code=200)
 def get_location(search_prompt: str):
     try:
-        return handle_call(input=search_prompt)
+        return call_for_location(input=search_prompt)
     except MaxTokenReachedException:
         raise HTTPException(
             status_code=400, detail="Please enter less number of characters.")

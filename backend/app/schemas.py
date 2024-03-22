@@ -2,6 +2,16 @@ from pydantic import BaseModel, Field, ConfigDict, EmailStr, SecretStr
 from typing import Optional
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    model_config = ConfigDict(from_attributes=True)
+
+class TokenPayload(BaseModel):
+    sub: str = None
+    exp: int = None
+
+
 class TravelUserSchema(BaseModel):
     username: str = Field(..., min_length=4, max_length=16,
                           description="The name used to login to the users account.")
@@ -44,6 +54,7 @@ class TravelUserOutSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+
 class ExperienceSchema(BaseModel):
     title: str = Field(..., min_length=1, max_length=100,
                        description="The name of the experience.")
@@ -71,6 +82,13 @@ class ExperienceSchema(BaseModel):
             }
         })
 
+class UserRegisterSchema(BaseModel):
+    email: EmailStr
+    last_name: str
+    first_name: str
+    username: str
+    hashed_password: str
+    model_config = ConfigDict(from_attributes=True)
 
 class ExperienceUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=100,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useAuthStore from "src/stores/store";
+import useAuthStore from "../stores/store";
 import UserExperiencePost from "../components/UserExperiencePost";
 
 

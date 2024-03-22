@@ -1,10 +1,10 @@
 from fastapi import HTTPException, status, Response, Depends, APIRouter
 from app.db_setup import get_db
-from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.orm import Session
 from sqlalchemy import select, update, delete, insert
 from sqlalchemy.exc import IntegrityError
 from app.database.models import TravelUser
-from app.schemas import Token, TravelUserSchema, TravelUserOutSchema
+from app.schemas import Token, TravelUserSchema, TravelUserOutSchema, UserRegisterSchema
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Annotated
 from app.security import get_current_user, create_access_token, hash_password, verify_password
@@ -22,6 +22,18 @@ ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 router = APIRouter(tags=["auth"])
+
+@router.post("/user/create", status_code=status.HTTP_201_CREATED)
+def register_user(user: UserRegisterSchema, db: Session = Depends(get_db)) -> TravelUserOutSchema:
+    hashed_password: str = hash_password(user.hashed_password)
+    user.hashed_password = hashed_password
+    try:
+        new_user = TravelUser(**user.model_dump())
+        db.add(new_user)
+        db.commit()
+    except IntegrityError:
+        raise HTTPException(detail="User already exists", status_code=status.HTTP_400_BAD_REQUEST) # Might not be secure
+    return new_user
 
 @router.post("/token")
 def login(
