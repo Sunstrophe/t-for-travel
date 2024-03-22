@@ -23,6 +23,7 @@ class TravelUser(Base):
         "country.id", ondelete="SET NULL"), nullable=True)
     is_public: Mapped[bool]
     is_banned: Mapped[bool]
+    experiences: Mapped[list["Experience"]] = relationship("Experience", back_populates="user")
 
     def __repr__(self) -> str:
         return f"<User={self.username}>"
@@ -54,6 +55,8 @@ class Experience(Base):
     longitude: Mapped[float] = mapped_column(nullable=True)
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
+    user_id: Mapped[int] = mapped_column(ForeignKey("traveluser.id", ondelete="SET NULL"), nullable=True)
+    user: Mapped[TravelUser] = relationship(TravelUser, back_populates="experiences")
 
     def __repr__(self) -> str:
         return f"<Experience={self.title}>"

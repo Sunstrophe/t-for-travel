@@ -14,8 +14,7 @@ class TravelUserSchema(BaseModel):
     email: EmailStr = Field(..., min_length=1, max_length=255,
                             description="The email for the user")
     # password: SecretStr = Field(..., min_length=8, max_length=255)
-    country_id: int = Field(
-        ..., description="id for whatever country the user has set for their account")
+    country_id: int | None = None
     is_public: bool | None = True
     is_banned: bool | None = False
 
@@ -27,7 +26,7 @@ class TravelUserSchema(BaseModel):
                 "first_name": "John",
                 "last_name": "Doe",
                 "email": "john_doe@example.com",
-                "country_id": 1,
+                "country_id": None,
                 "is_public": True,
                 "is_banned": False
             }
@@ -45,10 +44,9 @@ class ExperienceSchema(BaseModel):
     image: str | None = None
     latitude: float | None = None
     longitude: float | None = None
+    user_id: int | None = None
     is_positive: bool | None = True
     is_public: bool | None = True
-    # images: list["ImageLinkSchema"] | None = []
-    # picture:  associate picture with an id?
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={
@@ -58,6 +56,7 @@ class ExperienceSchema(BaseModel):
                 "image": None,
                 "latitude": 59.3342,
                 "longitude": 18.0586,
+                "user_id": 1,
                 "is_positive": True,
                 "is_public": False
             }
