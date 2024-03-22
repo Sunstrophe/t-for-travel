@@ -43,8 +43,8 @@ class ExperienceSchema(BaseModel):
                              )
     # country_id: int = Field(..., description="id for which country it is in")
     image: str | None = None
-    latitude: float
-    longitude: float
+    latitude: float | None = None
+    longitude: float | None = None
     is_positive: bool | None = True
     is_public: bool | None = True
     # images: list["ImageLinkSchema"] | None = []

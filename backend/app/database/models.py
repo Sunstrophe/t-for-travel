@@ -50,8 +50,8 @@ class Experience(Base):
     #     "country.id", ondelete="SET NULL"), nullable=True)
     # images: Mapped[list["ImageLink"]] = relationship("ImageLink", back_populates="experience")
     image: Mapped[str] = mapped_column(String(255), nullable=True)
-    latitude: Mapped[float]
-    longitude: Mapped[float]
+    latitude: Mapped[float] = mapped_column(nullable=True)
+    longitude: Mapped[float] = mapped_column(nullable=True)
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
 
