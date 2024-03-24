@@ -1,29 +1,83 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import useAuthStore from "../stores/store";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-const LoginMenu = () => {
+function LoginMenu() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  {
-    /* Implement this to display: Welcome, {username} once logged
-                                                       in instead of login menu*/
-  }
-  const [password, setPassword] = useState("");
+  const { setToken, token } = useAuthStore();
+
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-  };
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-  };
+  const [serverError, setServerError] = useState(""); // New state for server-side errors
+  const [loading, setLoading] = useState(false); // Loading state for form submission
 
-  const submitLoginForm = (e) => {
+  function validateEmail() {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!regex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  }
+
+  function validatePassword() {
+    if (!password) {
+      setPasswordError("Password is required");
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  }
+
+  async function submitLogin(e) {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
-  };
+    setServerError("");
+    setLoading(true);
+    const isEmailValid = validateEmail();
+    const isPasswordValid = validatePassword();
+
+    if (isEmailValid && isPasswordValid) {
+      const formData = new FormData();
+      formData.append("username", email);
+      formData.append("password", password);
+
+      try {
+        const response = await fetch("http://localhost:8000/user/token", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setToken(data.access_token);
+          console.log(token);
+          navigate("/userpage");
+        } else {
+          const data = await response.json();
+          setServerError(data.detail);
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+        setServerError("An unexpected error occurred. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="relative">
@@ -31,7 +85,6 @@ const LoginMenu = () => {
         onClick={() => setMenuOpen(!menuOpen)}
         className="flex justify-between pt-1.5"
       >
-        {/* SVG plus sign which rotates and turns into minus when clicked on*/}
         <span className="mr-34 font-light">Login</span>
         <svg
           className="fill-gray-400 shrink-0 ml-8"
@@ -60,69 +113,70 @@ const LoginMenu = () => {
         </svg>
       </button>
 
-      {/* If menu is open, display the form*/}
       {menuOpen && (
-        <div className="absolute top-full mt-4 px-12 bg-white border border-gray-300 rounded-md shadow-md md:w-96 right-0">
-          <div className="flex mx-3 w-full">
-            <form onSubmit={submitLoginForm}>
-              <div>
-                <div className="my-4">
+        <div className="absolute top-full mt-4  bg-white rounded-md shadow-md md:w-96 right-0">
+            <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+
+              <form onSubmit={submitLogin} className="space-y-6" noValidate>
+                <div>
                   <label
-                    for="email"
+                    htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Your email
+                    Email
                   </label>
                   <input
                     type="email"
-                    name="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                    placeholder="name@company.com"
                     value={email}
-                    onChange={handleEmail}
+                    placeholder="name@company.com"
+                    onChange={(e) => setEmail(e.target.value)}
+                    onBlur={validateEmail}
+                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {emailError && (
+                    <p className="mt-2 text-sm text-red-600">{emailError}</p>
+                  )}
                 </div>
 
-                <div className="mt-4">
+                <div>
                   <label
-                    for="password"
+                    htmlFor="password"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Password
                   </label>
                   <input
                     type="password"
-                    name="password"
                     id="password"
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                     value={password}
-                    onChange={handlePassword}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onBlur={validatePassword}
+                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
-                </div>
-                <div className="ml-4 mt-2 mb-6 text-sm font-light text-gray-500">
-                  Forgot your password?
-                  <div className="text-sm underline hover:text-gray-600">
-                    <Link to="/resetpassword">Reset password</Link>
-                  </div>
+                  {passwordError && (
+                    <p className="mt-2 text-sm text-red-600">{passwordError}</p>
+                  )}
                 </div>
 
-                <div className="flex justify-flex-start">
-                  <Link to="/userpage">
-                    <button
-                      type="submit"
-                      onClick={() => setMenuOpen(false)} // Close the menu when the button is clicked
-                      className="bg-primary-600 text-gray-600 px-4 py-2 border border-gray-400 rounded-md hover:bg-primary-700
-                    focus:outline-none focus:ring focus:border-primary-300"
-                    >
-                      Login
-                    </button>
-                  </Link>
+                <div className="my-2">
+                  {serverError && (
+                    <p className="mt-2 text-sm text-red-600">{serverError}</p>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    disabled={loading}
+                  >
+                    {loading ? "Logging in..." : "Login"}
+                  </button>
                 </div>
 
                 {/* Clickable link to signup page*/}
-                <div className="my-6">
+                <div className="my-10">
                   <div className="mt-6 text-sm font-light text-gray-500 text-center">
                     Don't have an account?
                   </div>
@@ -130,13 +184,12 @@ const LoginMenu = () => {
                     <Link to="/signup">Sign up here</Link>
                   </div>
                 </div>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          
         </div>
       )}
     </div>
   );
-};
-
+}
 export default LoginMenu;

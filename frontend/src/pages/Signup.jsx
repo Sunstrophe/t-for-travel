@@ -3,7 +3,7 @@ import SignupForm from "../components/SignupForm";
 
 function Signup() {
   return (
-    <section className="bg-gray-100">
+    <section className="bg-opacity-50">
       <SignupForm/>
     </section>
   );

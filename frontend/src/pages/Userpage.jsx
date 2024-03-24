@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from "react";
 import useAuthStore from "../stores/store";
 import UserExperiencePost from "../components/UserExperiencePost";
+import { useNavigate } from "react-router-dom";
 
 
 function Userpage() {
-  const userData = useAuthStore((state) => state.userData);
+  const { token, logout, fetchUser, userData } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      fetchUser();
+    }
+  }, []);
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
@@ -57,6 +72,26 @@ function Userpage() {
           </div>
           <div className="col-span-4 sm:col-span-9">
             <div className="bg-white shadow rounded-lg p-6">
+            <li className="mt-auto -mx-6">
+              <div className="px-6 py-3">
+                {token && (
+                  <div className="justify-between">
+                    <div className="flex items-center">
+                      <span className="inline-block w-3 h-3 mr-2 bg-green-500 rounded-full"></span>{" "}
+                      {/* Green circle */}
+                      {userData && userData.email}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 my-2 text-sm text-white bg-black rounded hover:bg-red-700"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </li>
+
               <h2 className="text-xl font-bold">Welcome {userData.first_name}</h2>
               <button
                 className="border border-gray-700 p-6 my-4 mx-4 rounded-md uppercase font-light hover:font-bold hover:bg-gray-100"

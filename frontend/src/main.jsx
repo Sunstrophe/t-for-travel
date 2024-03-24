@@ -9,6 +9,8 @@ import About from "./pages/About";
 import Cookies from "./pages/Cookies";
 import Signup from "./pages/Signup";
 import Userpage from "./pages/Userpage";
+import PasswordResetPage from "./pages/PasswordResetPage";
+import ResetConfirmationPage from "./pages/ResetConfirmationPage";
 
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
           <Route path="/cookies" element={<Cookies />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/userpage" element={<Userpage />} />
+          <Route path="/passwordrecovery" element={<PasswordResetPage />} />
+          <Route path="/resetpassword" element={<ResetConfirmationPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

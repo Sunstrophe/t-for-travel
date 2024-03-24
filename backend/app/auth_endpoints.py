@@ -62,19 +62,28 @@ def login(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/user/create", status_code=status.HTTP_201_CREATED)
-def register_user(user: TravelUserSchema, db: Session = Depends(get_db)):
-    # TODO ADD VALIDATION TO CREATION OF PASSWORD
-    
-    hashed_password = hash_password(user.hashed_password)
-    user.hashed_password = hashed_password
-    new_user = TravelUser(**user.model_dump(), disabled=True)
+def register_user(user_data: UserRegisterSchema, db: Session = Depends(get_db)):
+    # Validate data from UserRegisterSchema
+    user_dict = user_data.dict()
+
+    # Set default values for is_public and is_banned
+    user_dict['is_public'] = True
+    user_dict['is_banned'] = False
+
+    # Hash the password
+    hashed_password = hash_password(user_dict['hashed_password'])
+    user_dict['hashed_password'] = hashed_password
+
+    # Create a TravelUser instance
+    new_user = TravelUser(**user_dict)
+
+    # Add user to the database
     db.add(new_user)
     db.commit()
+    db.refresh(new_user)
     return new_user
 
-# Keep in mind that without the response model or return schema
-# we would expose the hashed password, which absolutely cannot happen
-# Perhaps better to use .only
+
 @router.get("/me", response_model=TravelUserOutSchema)
 def read_users_me(current_user: Annotated[TravelUser, Depends(get_current_user)]):
     return current_user

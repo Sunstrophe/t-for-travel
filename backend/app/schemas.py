@@ -84,8 +84,6 @@ class ExperienceSchema(BaseModel):
 
 class UserRegisterSchema(BaseModel):
     email: EmailStr
-    last_name: str
-    first_name: str
     username: str
     hashed_password: str
     model_config = ConfigDict(from_attributes=True)

@@ -57,6 +57,8 @@ function Contact() {
                       className="p-2 border border-black rounded-xl"
                       name="firstName"
                       placeholder="Enter your first name:"
+                      value={firstName}
+                      onChange={handleFirstName}
                     />
                   </div>
 
@@ -66,6 +68,8 @@ function Contact() {
                       className="p-2 border border-black rounded-xl"
                       name="lastName"
                       placeholder="Enter your last name:"
+                      value={lastName}
+                      onChange={handleLastName}
                     />
                   </div>
 

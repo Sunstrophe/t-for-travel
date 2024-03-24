@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function SignupForm() {
-let navigate = useNavigate();
+  let navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState([]);
@@ -10,17 +10,17 @@ let navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState([]);
 
-  const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState([]);
-
-  const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState([]);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState([]);
 
   const [terms, setTerms] = useState(false);
   const [termsError, setTermsError] = useState("");
+
+  const [successMessage, setSuccessMessage] = useState("");
+
 
   function validateEmail() {
     let emailErrors = [];
@@ -49,20 +49,12 @@ let navigate = useNavigate();
     setPasswordError(passwordErrors);
   }
 
-  function validateFirstName() {
-    let errors = [];
-    if (!firstName) {
-      errors.push("First name is required");
+  function validateConfirmPassword() {
+    let confirmPasswordErrors = [];
+    if (password !== confirmPassword) {
+      confirmPasswordErrors.push("Passwords do not match");
     }
-    setFirstNameError(errors);
-  }
-
-  function validateLastName() {
-    let errors = [];
-    if (!lastName) {
-      errors.push("Last name is required");
-    }
-    setLastNameError(errors);
+    setConfirmPasswordError(confirmPasswordErrors);
   }
 
   function validateUsername() {
@@ -85,44 +77,37 @@ let navigate = useNavigate();
     e.preventDefault();
     validateEmail();
     validatePassword();
-    validateFirstName();
-    validateLastName();
+    validateConfirmPassword();
     validateUsername();
     validateTerms();
 
     if (
       emailError.length === 0 &&
       passwordError.length === 0 &&
-      firstNameError.length === 0 &&
-      lastNameError.length === 0 &&
+      confirmPasswordError.length === 0 &&
       usernameError.length === 0 &&
       !termsError
     ) {
       try {
-        const response = await fetch(
-          "http://localhost:8000/user/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              first_name: firstName,
-              last_name: lastName,
-              hashed_password: password,
-              username: username,
-            }),
-          }
-        );
+        const response = await fetch("http://localhost:8000/user/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            hashed_password: password,
+            username: username,
+          }),
+        });
+
         const data = await response.json();
 
         if (response.status === 201) {
           console.log("Success");
-          navigate("/login");
+          setSuccessMessage(`Account created, check your registered email address at ${email}`);
         } else {
           console.log("Something went wrong");
-          //   Log the response json to the console
           console.log(data);
           throw new Error("Error from the server");
         }
@@ -139,13 +124,14 @@ let navigate = useNavigate();
       <div className="flex flex-col justify-center flex-1 min-h-full px-6 py-12 lg:px-8">
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+            <div className="pt-4 pb-8 font-bold text-xl">Create a new account</div>
             <form className="space-y-6" onSubmit={submitRegister}>
               <div>
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Email address
+                  Email address:
                 </label>
                 <div className="mt-1">
                   <input
@@ -169,64 +155,10 @@ let navigate = useNavigate();
 
               <div>
                 <label
-                  htmlFor="first_name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  First Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="first_name"
-                    name="first_name"
-                    type="text"
-                    autoComplete="given-name"
-                    required
-                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    onBlur={validateFirstName}
-                  />
-                  {firstNameError.map((error, index) => (
-                    <p key={index} className="mt-2 text-sm text-red-600">
-                      {error}
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="last_name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Last Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="last_name"
-                    name="last_name"
-                    type="text"
-                    autoComplete="family-name"
-                    required
-                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    onBlur={validateLastName}
-                  />
-                  {lastNameError.map((error, index) => (
-                    <p key={index} className="mt-2 text-sm text-red-600">
-                      {error}
-                    </p>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <label
                   htmlFor="username"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Username
+                  Username:
                 </label>
                 <div className="mt-1">
                   <input
@@ -248,13 +180,12 @@ let navigate = useNavigate();
                 </div>
               </div>
 
-
               <div>
                 <label
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Password
+                  Password:
                 </label>
                 <div className="mt-1">
                   <input
@@ -275,9 +206,33 @@ let navigate = useNavigate();
                   ))}
                 </div>
               </div>
-              
-              
 
+              <div>
+                <label
+                  htmlFor="confirm_password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Confirm Password:
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="confirm_password"
+                    name="confirm_password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onBlur={validateConfirmPassword}
+                  />
+                  {confirmPasswordError.length > 0 && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {confirmPasswordError[0]}
+                    </p>
+                  )}
+                </div>
+              </div>
 
               <div className="flex items-center">
                 <input
@@ -302,12 +257,16 @@ let navigate = useNavigate();
               <div>
                 <button
                   type="submit"
-                  className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Register
                 </button>
               </div>
             </form>
+            {/* Success message */}
+          {successMessage && (
+            <p className="mt-4 text-green-600">{successMessage}</p>
+          )}
           </div>
         </div>
       </div>
