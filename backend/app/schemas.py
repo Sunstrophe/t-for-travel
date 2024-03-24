@@ -11,6 +11,9 @@ class TokenPayload(BaseModel):
     sub: str = None
     exp: int = None
 
+class NewPasswordSchema(BaseModel):
+    token: str
+    new_password: str
 
 class TravelUserSchema(BaseModel):
     username: str = Field(..., min_length=4, max_length=16,
@@ -51,8 +54,7 @@ class TravelUserOutSchema(BaseModel):
     email: EmailStr
     last_name: str
     first_name: str
-    model_config = ConfigDict(from_attributes=True)
-
+    
 
 
 class ExperienceSchema(BaseModel):
@@ -82,11 +84,12 @@ class ExperienceSchema(BaseModel):
             }
         })
 
+
 class UserRegisterSchema(BaseModel):
     email: EmailStr
     username: str
     hashed_password: str
-    model_config = ConfigDict(from_attributes=True)
+
 
 class ExperienceUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=100,
