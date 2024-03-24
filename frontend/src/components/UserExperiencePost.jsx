@@ -10,13 +10,13 @@ function UserExperiencePost({ onClose, onNewPost }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
-    const [imageName, setImageName] = useState(null);
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
     const [marker, setMarker] = useState(null);
     const [map, setMap] = useState(null);
     const [position, setPosition] = useState(sthlmCenter);
+    let newPost = {}
 
     const modalContentRef = useRef(null);
 
@@ -72,62 +72,87 @@ function UserExperiencePost({ onClose, onNewPost }) {
         setIsMapVisible(!isMapVisible);
     };
 
-    const handleSave = () => {
-        // Make backend call here
-        let imageName = null
-        if (selectedImage !== null){
-            try {
-                const formData = new FormData()
-                formData.append("file", selectedImage)
-
-                fetch("http://127.0.0.1:8000/image", {
-                    method: "POST",
-                    body: formData,
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    imageName = data["filename"]
-                    console.log(data); 
-                }
-                );
-            } catch (error) {
-                console.error("Error uploading file", error);
+    const postExperience = async(newPost, imageName) => {
+        console.log("newPost: ", newPost)
+        try {
+            const response = await fetch("http://127.0.0.1:8000/experience", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newPost),
+            });
+            if (!response.ok) {
+                throw new Error(`Error posting experience: ${response.status}`)
             }
+            const experience = await response.json()
+            return experience
+        } catch (error) {
+            if (imageName !== null){
+                await removeImage(imageName)
+            }
+            console.error("Error posting experience", error);
         }
+    }
 
-        console.log(imageName)
+    const postImage = async() => {
+        try {
+            const formData = new FormData()
+            formData.append("file", selectedImage)
+            const response = await fetch("http://127.0.0.1:8000/image", {
+                method: "POST",
+                body: formData,
+            })
+            if (!response.ok) {
+                throw new Error(`Error posting image: ${response.status}`)
+            }        
+            console.log("response: ", response)
+            const data = await response.json()
+            console.log("data: ", data)
+            return data["filename"]
+        } catch (error) {
+            console.error("Error uploading file", error);
+        }
+    }
+
+    const removeImage = async(imageName) => {
+        console.log("imageName: ", imageName)
+        const url = `http://127.0.0.1:8000/image/?filename=${imageName}`
+        const response = await fetch(url, {
+            method: "DELETE",
+        })
+        console.log(response)
+        return response
+    }
+
+    const handleSave = async() => {
+        let imageName = null
         
-        // ---------------------------------------------------
-
-        // if (map === null) {
-        //     var lat = null;
-        //     var lng = null;
-        // } else {
-        //     var lat = map.getCenter()["lat"];
-        //     var lng = map.getCenter()["lng"];
-        // }
-
-        // const newPost = {
-        //     title: title,
-        //     description: description,
-        //     image: null,
-        //     latitude: lat,
-        //     longitude: lng,
-        //     is_positive: positiveExperience,
-        //     is_public: isPublic,
-        // };
+        if (selectedImage !== null) {
+            imageName = await postImage()
+        }
+        console.log("imageName: ", imageName)
         
-        // try {
-        //     fetch("http://127.0.0.1:8000/experience", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify(newPost),
-        //     });
-        // } catch (error) {
-        //     console.error("Error posting experience", error);
-        // }
+        if (map === null) {
+            var lat = null;
+            var lng = null;
+        } else {
+            var lat = map.getCenter()["lat"];
+            var lng = map.getCenter()["lng"];
+        }
+        
+        newPost = {
+            title: title,
+            description: description,
+            image: imageName,
+            latitude: lat,
+            longitude: lng,
+            is_positive: positiveExperience,
+            is_public: isPublic,
+        };
+        
+        const experience = await postExperience(newPost=newPost, imageName=imageName)
+        console.log("experience: ", experience)
 
         // --------------------------------------------
 
