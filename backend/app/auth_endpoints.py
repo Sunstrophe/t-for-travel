@@ -13,6 +13,7 @@ from pydantic import ValidationError
 from datetime import timedelta
 from pprint import pprint
 from dotenv import load_dotenv
+from app.email import generate_password_reset_token, send_password_reset_email, get_user_by_email, verify_password_reset_token
 import os
 
 load_dotenv(override=True)
@@ -61,6 +62,7 @@ def login(
 
     print({"access_token": access_token, "token_type": "bearer"})
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/user/create", status_code=status.HTTP_201_CREATED)
 def register_user(user_data: UserRegisterSchema, db: Session = Depends(get_db)):

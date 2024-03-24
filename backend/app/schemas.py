@@ -7,13 +7,16 @@ class Token(BaseModel):
     token_type: str
     model_config = ConfigDict(from_attributes=True)
 
+
 class TokenPayload(BaseModel):
     sub: str = None
     exp: int = None
 
+
 class NewPasswordSchema(BaseModel):
     token: str
     new_password: str
+
 
 class TravelUserSchema(BaseModel):
     username: str = Field(..., min_length=4, max_length=16,
