@@ -19,8 +19,6 @@ export default function SignupForm() {
   const [terms, setTerms] = useState(false);
   const [termsError, setTermsError] = useState("");
 
-  const [successMessage, setSuccessMessage] = useState("");
-
 
   function validateEmail() {
     let emailErrors = [];
@@ -59,7 +57,7 @@ export default function SignupForm() {
 
   function validateUsername() {
     let errors = [];
-    if (!lastName) {
+    if (!username) {
       errors.push("Username is required");
     }
     setUsernameError(errors);
@@ -96,8 +94,8 @@ export default function SignupForm() {
           },
           body: JSON.stringify({
             email,
-            hashed_password: password,
             username: username,
+            hashed_password: password,
           }),
         });
 
@@ -105,7 +103,7 @@ export default function SignupForm() {
 
         if (response.status === 201) {
           console.log("Success");
-          setSuccessMessage(`Account created, check your registered email address at ${email}`);
+          navigate("/");
         } else {
           console.log("Something went wrong");
           console.log(data);
@@ -124,7 +122,9 @@ export default function SignupForm() {
       <div className="flex flex-col justify-center flex-1 min-h-full px-6 py-12 lg:px-8">
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-            <div className="pt-4 pb-8 font-bold text-xl">Create a new account</div>
+            <div className="pt-4 pb-8 font-bold text-xl">
+              Create a new account
+            </div>
             <form className="space-y-6" onSubmit={submitRegister}>
               <div>
                 <label
@@ -263,10 +263,6 @@ export default function SignupForm() {
                 </button>
               </div>
             </form>
-            {/* Success message */}
-          {successMessage && (
-            <p className="mt-4 text-green-600">{successMessage}</p>
-          )}
           </div>
         </div>
       </div>

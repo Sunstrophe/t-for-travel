@@ -19,7 +19,7 @@ function PasswordResetPage() {
             <PasswordResetForm />
           </div>
             <div className="flex justify-center">
-              <Link to="/Home" className="py-4 underline">
+              <Link to="/" className="py-4 underline">
                 Go to main page
               </Link>
             </div>

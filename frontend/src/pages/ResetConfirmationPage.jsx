@@ -121,8 +121,8 @@ function ResetConfirmationPage() {
               )}
             </form>
             <div className="flex justify-center">
-              <Link to="/login" className="py-4 underline">
-                Go to login
+              <Link to="/" className="py-4 underline">
+                Go to main page
               </Link>
             </div>
           </div>

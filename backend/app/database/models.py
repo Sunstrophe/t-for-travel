@@ -16,7 +16,7 @@ class TravelUser(Base):
     first_name: Mapped[str] = mapped_column(String(255), nullable=True)
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     email: Mapped[str]
-    # password: Mapped[str] # add later
+    hashed_password: Mapped[str]
     country: Mapped["Country"] = relationship(
         "Country", back_populates="users")
     country_id: Mapped[int] = mapped_column(ForeignKey(

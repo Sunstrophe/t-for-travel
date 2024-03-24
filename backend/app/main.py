@@ -14,7 +14,6 @@ from app.database.models import TravelUser, Experience, ImageLink
 from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
 from app.prompting import call_for_location
 from app.auth_endpoints import router as auth_router
-from app.security import get_current_user
 
 from app.exceptions import MaxTokenReachedException
 
@@ -32,18 +31,19 @@ app = FastAPI(lifespan=lifespan)
 origins = [
     "https://localhost",
     "https://localhost:8000",
-    "https://localhost:5173"
+    "https://localhost:5173,"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(auth_router)
+
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
