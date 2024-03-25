@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, update, delete, insert
 from sqlalchemy.exc import IntegrityError
 from app.database.models import TravelUser
-from app.schemas import Token, UserRegisterSchema, UserOutSchema
+from app.schemas import Token, UserRegisterSchema, TravelUserOutSchema
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from app.security import get_current_user, create_access_token, hash_password, verify_password

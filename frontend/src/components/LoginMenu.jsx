@@ -49,22 +49,25 @@ function LoginMenu() {
     const isPasswordValid = validatePassword();
 
     if (isEmailValid && isPasswordValid) {
+      console.log("Is Valid!!!")
       const formData = new FormData();
       formData.append("username", email);
       formData.append("password", password);
-
+      // console.log("formData: ", formData)
       try {
         const response = await fetch("http://localhost:8000/user/token", {
           method: "POST",
           body: formData,
         });
-
-        if (response.ok) {
+        // console.log(response)
+        if (response.ok == 200) {
           const data = await response.json();
           setToken(data.access_token);
-          console.log(token);
-          navigate("/userpage");
+          // console.log(token);
+          // navigate("/userpage");
+          console.log(data)
         } else {
+          console.log("Login failed")
           const data = await response.json();
           setServerError(data.detail);
         }
