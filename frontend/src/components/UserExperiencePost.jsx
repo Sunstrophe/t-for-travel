@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import Search from "./Search";
 import Switch from "react-switch";
 import UserMarker from "./UserMarker";
 
@@ -13,9 +12,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
-    const [marker, setMarker] = useState(null);
     const [map, setMap] = useState(null);
-    const [position, setPosition] = useState(sthlmCenter);
     let newPost = {}
 
     const modalContentRef = useRef(null);
@@ -133,7 +130,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
         }
         console.log("imageName: ", imageName)
         
-        if (map === null) {
+        if (map === null || isMapVisible === false) {
             var lat = null;
             var lng = null;
         } else {
@@ -154,7 +151,6 @@ function UserExperiencePost({ onClose, onNewPost }) {
         const experience = await postExperience(newPost=newPost, imageName=imageName)
         console.log("experience: ", experience)
 
-        // --------------------------------------------
 
         // onNewPost(newPost);
 
@@ -164,7 +160,6 @@ function UserExperiencePost({ onClose, onNewPost }) {
         setDescription("");
         setSelectedImage(null);
         setIsMapVisible(false); // Close the map when saving
-        // setCoordinates([59.31, 18.07]); // Reset coordinates to default
         setPositiveExperience(true);
         setIsPublic(true);
 
@@ -230,7 +225,6 @@ function UserExperiencePost({ onClose, onNewPost }) {
                         <button className="w-1/2 p-2 border rounded-lg" onClick={handleToggleMap}>
                             {isMapVisible ? "Hide Map" : "Show Map"}
                         </button>
-                        {/* {isMapVisible && <Search onSearch={handleSearch} />} */}
                     </div>
                     {isMapVisible && (
                         <div>
