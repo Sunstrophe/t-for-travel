@@ -7,13 +7,15 @@ const sthlmCenter = [59.3342, 18.0586];
 
 function UserExperiencePost({ onClose }) {
     const [title, setTitle] = useState("");
+    const [isTitleOOB, setIsTitleOOB] = useState(true)
     const [description, setDescription] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isImageToBig, setIsImageToBig] = useState(false)
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
     const [map, setMap] = useState(null);
-    const [isPostable, setIsPostable] = useState(false)
+    const [inputTouched, setInputTouched] = useState(false)
     let newPost = {}
 
     const modalContentRef = useRef(null);
@@ -39,6 +41,17 @@ function UserExperiencePost({ onClose }) {
     const handleTitleChange = (e) => {
         setTitle(e.target.value);
     };
+    
+    const checkTitle = () => {
+        // console.log(title.length)
+        if (title.length < 3) {
+            setIsTitleOOB(true)
+        }
+        else {
+            setIsTitleOOB(false)
+        }
+        handleInputFocus()
+    }
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
@@ -46,23 +59,44 @@ function UserExperiencePost({ onClose }) {
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-
         if (file) {
             setSelectedImage(file);
-        }
+            if (file.size > 1000000) {
+                setIsImageToBig(true)
+            }
+            else {
+                setIsImageToBig(false)
+            }
+    }
     };
 
     const handleDragOver = (e) => {
         e.preventDefault();
     };
 
+    // const checkImageSize = () => {
+    //     console.log(selectedImage.size)
+    //     if (selectedImage.size > 1000000) {
+    //         setIsImageToBig(true)
+    //     } else {
+    //         console.log("test")
+    //         setIsImageToBig(false)
+    //     }
+    // }
+
     const handleDrop = (e) => {
         e.preventDefault();
 
         const file = e.dataTransfer.files[0];
 
+        setSelectedImage(file);
         if (file) {
-            setSelectedImage(file);
+            if (file.size > 1000000) {
+                setIsImageToBig(true)
+            }
+            else {
+                setIsImageToBig(false)
+            }
         }
     };
 
@@ -161,6 +195,7 @@ function UserExperiencePost({ onClose }) {
         setPositiveExperience(true);
         setIsPublic(true);
         setMap(null);
+        setInputTouched(false)
         
         // Then make it make a call for fetch all our posts on the side
 
@@ -173,6 +208,10 @@ function UserExperiencePost({ onClose }) {
         console.log(map.getCenter());
         console.log(map.getCenter()["lat"]);
     };
+
+    const handleInputFocus = () => {
+        setInputTouched(true)
+    }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-50">
@@ -190,9 +229,12 @@ function UserExperiencePost({ onClose }) {
                         type="text"
                         value={title}
                         onChange={handleTitleChange}
+                        onBlur={checkTitle}
                         className="w-1/2 p-2 mb-2 border rounded-lg"
                         placeholder="Enter the title of your post"
+                        maxLength={100}
                     />
+                    {inputTouched && isTitleOOB ? <p className="text-sm text-red-500">Must be more than 3 characters</p> : null}
                 </div>
                 {/* DESCRIPTION */}
                 <div className="mb-4">
@@ -200,9 +242,13 @@ function UserExperiencePost({ onClose }) {
                     <textarea
                         value={description}
                         onChange={handleDescriptionChange}
-                        className="w-1/2 p-2 border rounded-lg"
+                        className="w-full p-2 border rounded-lg"
                         placeholder="Enter the description of your post"
+                        maxLength={255}
                     />
+                    <div className="flex">
+                        <p className="p-1 mt-1 ml-auto text-xs text-gray-600 border border-gray-600 rounded-md">{description.length}/255</p>
+                    </div>
                 </div>
                 {/* IMAGE STUFF */}
                 <div className="mb-4">
@@ -216,7 +262,8 @@ function UserExperiencePost({ onClose }) {
                             src={URL.createObjectURL(selectedImage)}
                             alt="Selected"
                             className="object-cover w-full h-48 rounded-lg"
-                        />
+                            />
+                            {isImageToBig ? <p className="text-sm text-red-500">Image to big! Image size limit 1mb</p> : null}
                     </div>
                 )}
                 {/* MAP CONTAINER  */}
@@ -267,7 +314,7 @@ function UserExperiencePost({ onClose }) {
                 </div>
                 {/* BUTTONS */}
                 <div className="flex justify-between">
-                    <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handlePost}>
+                    <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600 disabled:bg-gray-400" onClick={handlePost} disabled={isTitleOOB || isImageToBig}>
                         Post
                     </button>
                     <button className="p-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={onClose}>
