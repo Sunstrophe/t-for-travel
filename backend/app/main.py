@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
 # from app.database.models import TravelUser, Experience
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ExperienceMapSchema
 from app.prompting import call_for_location
 
 from app.exceptions import MaxTokenReachedException
@@ -102,6 +102,14 @@ def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db
     except IntegrityError:
         raise HTTPException(
             status_code=400, detail="Could not add experience.")
+
+
+@experience_router.get("/", status_code=200)
+def get_experiences(lat: float, lng: float, db: Session = Depends(get_db)):
+    experiences = crud.get_close_experiences(db=db, lat=lat, lng=lng)
+    if experiences == []:
+        return None
+    return experiences
 
 
 @experience_router.get("/{experience_id}", status_code=200)

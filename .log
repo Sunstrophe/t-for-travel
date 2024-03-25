@@ -1,0 +1,40 @@
+Created at 1711391628
+Message:
+{
+    "latitude": 50,
+    "longitude": 50
+}
+CompletionUsage(completion_tokens=16, prompt_tokens=31, total_tokens=47)
+
+Created at 1711391641
+Message:
+{
+    "latitude": 50,
+    "longitude": 50
+}
+CompletionUsage(completion_tokens=16, prompt_tokens=31, total_tokens=47)
+
+Created at 1711391661
+Message:
+{
+    "latitude": 50,
+    "longitude": 50
+}  
+CompletionUsage(completion_tokens=17, prompt_tokens=36, total_tokens=53)
+
+Created at 1711396328
+Message:
+{
+    "latitude": 55.604981,
+    "longitude": 13.003822
+}
+CompletionUsage(completion_tokens=22, prompt_tokens=29, total_tokens=51)
+
+Created at 1711396535
+Message:
+{
+    "latitude": 55.604981,
+    "longitude": 13.003822
+}
+CompletionUsage(completion_tokens=22, prompt_tokens=29, total_tokens=51)
+
