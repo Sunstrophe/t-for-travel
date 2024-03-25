@@ -23,7 +23,7 @@ function Search({ map }) {
                 console.log(data);
                 // console.log(data[0]["latitude"])
                 // console.log(data[0]["longitude"])
-                map.setView([data["latitude"], data["longitude"]], map.getZoom())
+                map.setView([data[0]["latitude"], data[0]["longitude"]], map.getZoom())
             })
             .catch((error) => {
                 // Handle fetch errors
