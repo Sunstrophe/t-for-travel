@@ -35,9 +35,9 @@ class TravelUserSchema(BaseModel):
 
 
 class ExperienceSchema(BaseModel):
-    title: str = Field(..., min_length=1, max_length=100,
+    title: str = Field(..., min_length=3, max_length=100,
                        description="The name of the experience.")
-    description: str = Field(..., min_length=3, max_length=255,
+    description: str = Field(..., max_length=255,
                              description="The description of the experience.",
                              )
     # country_id: int = Field(..., description="id for which country it is in")
