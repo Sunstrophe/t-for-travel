@@ -49,34 +49,36 @@ function LoginMenu() {
     const isPasswordValid = validatePassword();
 
     if (isEmailValid && isPasswordValid) {
-      console.log("Is Valid!!!")
+      console.log("Is Valid!!!");
       const formData = new FormData();
       formData.append("username", email);
       formData.append("password", password);
       // console.log("formData: ", formData)
       try {
         const response = await fetch("http://localhost:8000/user/token", {
-          method: "POST",
-          body: formData,
+            method: "POST",
+            body: formData,
         });
-        // console.log(response)
-        if (response.ok == 200) {
-          const data = await response.json();
-          setToken(data.access_token);
-          // console.log(token);
-          // navigate("/userpage");
-          console.log(data)
+    
+        console.log("Response status:", response.status);
+    
+        const data = await response.json(); // Read the response body here
+    
+        if (response.ok) {
+            console.log("Login successful");
+            setToken(data.access_token);
+            navigate("/userpage");
+            console.log(data);
         } else {
-          console.log("Login failed")
-          const data = await response.json();
-          setServerError(data.detail);
+            console.log("Login failed");
+            setServerError(data.detail);
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error during login:", error);
         setServerError("An unexpected error occurred. Please try again later.");
-      } finally {
+    } finally {
         setLoading(false);
-      }
+    }
     } else {
       setLoading(false);
     }
@@ -118,78 +120,78 @@ function LoginMenu() {
 
       {menuOpen && (
         <div className="absolute top-full mt-4  bg-white rounded-md shadow-md md:w-96 right-0">
-            <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+          <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+            <form onSubmit={submitLogin} className="space-y-6" noValidate>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder="name@company.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={validateEmail}
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                {emailError && (
+                  <p className="mt-2 text-sm text-red-600">{emailError}</p>
+                )}
+              </div>
 
-              <form onSubmit={submitLogin} className="space-y-6" noValidate>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    placeholder="name@company.com"
-                    onChange={(e) => setEmail(e.target.value)}
-                    onBlur={validateEmail}
-                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  {emailError && (
-                    <p className="mt-2 text-sm text-red-600">{emailError}</p>
-                  )}
-                </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={validatePassword}
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                {passwordError && (
+                  <p className="mt-2 text-sm text-red-600">{passwordError}</p>
+                )}
+              </div>
 
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onBlur={validatePassword}
-                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  {passwordError && (
-                    <p className="mt-2 text-sm text-red-600">{passwordError}</p>
-                  )}
-                </div>
+              <div className="my-2">
+                {serverError && (
+                  <p className="mt-2 text-sm text-red-600">{serverError}</p>
+                )}
+              </div>
 
-                <div className="my-2">
-                  {serverError && (
-                    <p className="mt-2 text-sm text-red-600">{serverError}</p>
-                  )}
-                </div>
+              <button
+                type="submit"
+                className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  loading || !email || !password
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-indigo-700"
+                }`}
+                disabled={loading || !email || !password} // Disable if loading, email or password is empty
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
 
-                <div>
-                  <button
-                    type="submit"
-                    className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    disabled={loading}
-                  >
-                    {loading ? "Logging in..." : "Login"}
-                  </button>
+              {/* Clickable link to signup page*/}
+              <div className="my-10">
+                <div className="mt-6 text-sm font-light text-gray-500 text-center">
+                  Don't have an account?
                 </div>
-
-                {/* Clickable link to signup page*/}
-                <div className="my-10">
-                  <div className="mt-6 text-sm font-light text-gray-500 text-center">
-                    Don't have an account?
-                  </div>
-                  <div className="underline hover:text-gray-500 text-center">
-                    <Link to="/signup">Sign up here</Link>
-                  </div>
+                <div className="underline hover:text-gray-500 text-center">
+                  <Link to="/signup">Sign up here</Link>
                 </div>
-              </form>
-            </div>
-          
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

@@ -38,13 +38,13 @@ const useAuthStore = create((set, get) => ({
         setUserData(userData);
       } else if (response.status === 401) {
         logout();
-        // You might need to handle navigation to /login outside this store, as Zustand doesn't manage routing
+
       } else {
         console.error("Failed to fetch user data");
       }
     } catch (error) {
       console.error("There was an error fetching user data:", error);
-      // Handle error as needed
+  
     }
   },
 }));

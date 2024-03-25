@@ -19,6 +19,8 @@ export default function SignupForm() {
   const [terms, setTerms] = useState(false);
   const [termsError, setTermsError] = useState("");
 
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  
 
   function validateEmail() {
     let emailErrors = [];
@@ -98,19 +100,23 @@ export default function SignupForm() {
             hashed_password: password,
           }),
         });
-
+  
         const data = await response.json();
-
+  
+        console.log("Response:", response); // Log the entire response object
+        console.log("Response data:", data); // Log the response data
+  
         if (response.status === 201) {
           console.log("Success");
-          navigate("/");
+          setRegistrationSuccess(true);
         } else {
           console.log("Something went wrong");
-          console.log(data);
+          console.log("Error status:", response.status); // Log the response status
+          console.log("Error data:", data); // Log the error data
           throw new Error("Error from the server");
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error caught:", error); // Log any caught errors
       }
     } else {
       console.log("Error in form");
@@ -255,12 +261,53 @@ export default function SignupForm() {
               )}
 
               <div>
-                <button
-                  type="submit"
-                  className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Register
-                </button>
+              <button
+  type="submit"
+  className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm focus:outline-none ${
+    email &&
+    password &&
+    confirmPassword &&
+    username &&
+    !emailError.length &&
+    !passwordError.length &&
+    !confirmPasswordError.length &&
+    !usernameError.length &&
+    terms
+      ? "bg-blue-500 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      : "bg-gray-400 cursor-not-allowed"
+  }`}
+  disabled={
+    !(
+      email &&
+      password &&
+      confirmPassword &&
+      username &&
+      !emailError.length &&
+      !passwordError.length &&
+      !confirmPasswordError.length &&
+      !usernameError.length &&
+      terms
+    )
+  }
+>
+  Register
+</button>
+                {/* Confirmation message */}
+                {registrationSuccess && (
+                  <>
+                  <p className="mt-2 text-sm text-green-600">
+                    Sent a confirmation email
+                  </p>
+                  {/* Button to navigate */}
+                  <button
+                      type="button"
+                      onClick={() => navigate("/")}
+                      className="mt-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Navigate to Main Page
+                    </button>
+                  </>
+                )}
               </div>
             </form>
           </div>

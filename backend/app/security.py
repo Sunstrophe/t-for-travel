@@ -16,7 +16,6 @@ from pydantic import ValidationError
 
 load_dotenv(override=True)
 
-# TODO CREATE SETTINGSCLASS USING FASTAPI SOLUTION
 ALGORITHM = os.getenv("ALGORITHM")  # e.g HS256
 SECRET_KEY = os.getenv("SECRET_KEY")  # e.g asdsadsadsakjdsiaojdkasjdksaj
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv(
@@ -38,16 +37,13 @@ def create_access_token(data: dict, expires_delta: timedelta):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
 
-    # to_encode["exp"] = expire # exakt lika dana
-    # it should now look something like this {"sub": 1, "exp": 12312301203210}
-    to_encode.update({"exp": expire})  # exakt like dana
+    to_encode.update({"exp": expire}) 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
 def verify_token_access(token: str, credentials_exception: HTTPException):
-    # token
-    # asdasDJSAHdsajdkasjdksak.jashkdasjdKSJDksakjdsa ----> {"exp": 12030123021, "sub": 5}
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         token_data = TokenPayload(**payload)
