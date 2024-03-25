@@ -22,12 +22,12 @@ function Userpage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="container mx-auto py-8">
-        <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-          <div className="col-span-4 sm:col-span-3 overflow-y-auto max-h-screen">
-            <div className="bg-white shadow rounded-lg p-6">
+      <div className="container py-8 mx-auto">
+        <div className="grid grid-cols-4 gap-6 px-4 sm:grid-cols-12">
+          <div className="max-h-screen col-span-4 overflow-y-auto sm:col-span-3">
+            <div className="p-6 bg-white rounded-lg shadow">
               <div className="flex flex-col items-center">
-                <h1 className="font-bold uppercase my-6">My latest post</h1>
+                <h1 className="my-6 font-bold uppercase">My latest post</h1>
                 {posts.map((post, index) => (
                   <div
                     key={index}
@@ -37,12 +37,12 @@ function Userpage() {
                     <img
                       src={URL.createObjectURL(post.image)}
                       alt={post.title}
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="object-cover w-full h-48 rounded-lg"
                     />
                     {selectedPostIndex === index && (
                       <div className="expanded-post">
                         <hr className="my-2 border-t border-gray-300" />
-                        <h3 className="text-lg font-semibold mt-2">{post.title}</h3>
+                        <h3 className="mt-2 text-lg font-semibold">{post.title}</h3>
                         <p className="mt-2">{post.description}</p>
                       </div>
                     )}
@@ -53,24 +53,24 @@ function Userpage() {
             </div>
           </div>
           <div className="col-span-4 sm:col-span-9">
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="p-6 bg-white rounded-lg shadow">
               <h2 className="text-xl font-bold">Username</h2>
               <button
-                className="border border-gray-700 p-6 my-4 mx-4 rounded-md uppercase font-light hover:font-bold hover:bg-gray-100"
+                className="p-6 mx-4 my-4 font-light uppercase border border-gray-700 rounded-md hover:font-bold hover:bg-gray-100"
                 onClick={handleOpenModal}
               >
                 Make a new post
               </button>
               <hr className="my-2 border-t border-gray-300" />
 
-              <div className="flex justify-between flex-wrap w-1/2 mt-6">
-                <h2 className="text-xl font-bold mt-6 mb-4">User details</h2>
-                <button className="border border-gray-700 px-4 py-2 my-4 mx-4 rounded-md">
+              <div className="flex flex-wrap justify-between w-1/2 mt-6">
+                <h2 className="mt-6 mb-4 text-xl font-bold">User details</h2>
+                <button className="px-4 py-2 mx-4 my-4 border border-gray-700 rounded-md">
                   Edit user details
                 </button>
               </div>
               {isModalOpen && (
-                <UserExperiencePost onClose={handleCloseModal} onNewPost={handleNewPost} />
+                <UserExperiencePost onClose={handleCloseModal} />
               )}
             </div>
           </div>

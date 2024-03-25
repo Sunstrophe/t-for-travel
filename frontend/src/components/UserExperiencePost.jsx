@@ -5,7 +5,7 @@ import UserMarker from "./UserMarker";
 
 const sthlmCenter = [59.3342, 18.0586];
 
-function UserExperiencePost({ onClose, onNewPost }) {
+function UserExperiencePost({ onClose }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
@@ -13,6 +13,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
     const [positiveExperience, setPositiveExperience] = useState(true);
     const [isPublic, setIsPublic] = useState(true);
     const [map, setMap] = useState(null);
+    const [isPostable, setIsPostable] = useState(false)
     let newPost = {}
 
     const modalContentRef = useRef(null);
@@ -122,7 +123,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
         return response
     }
 
-    const handleSave = async() => {
+    const handlePost = async() => {
         let imageName = null
         
         if (selectedImage !== null) {
@@ -151,10 +152,7 @@ function UserExperiencePost({ onClose, onNewPost }) {
         const experience = await postExperience(newPost=newPost, imageName=imageName)
         console.log("experience: ", experience)
 
-
-        // onNewPost(newPost);
-
-        // Then make it make a call for fetch all our posts on the side
+        // Reset our states
 
         setTitle("");
         setDescription("");
@@ -162,9 +160,12 @@ function UserExperiencePost({ onClose, onNewPost }) {
         setIsMapVisible(false); // Close the map when saving
         setPositiveExperience(true);
         setIsPublic(true);
+        setMap(null);
+        
+        // Then make it make a call for fetch all our posts on the side
 
         // Close the modal
-        onClose;
+        onClose();
     };
 
     const handleMarkerPos = () => {
@@ -266,8 +267,8 @@ function UserExperiencePost({ onClose, onNewPost }) {
                 </div>
                 {/* BUTTONS */}
                 <div className="flex justify-between">
-                    <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handleSave}>
-                        Save
+                    <button className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600" onClick={handlePost}>
+                        Post
                     </button>
                     <button className="p-2 text-white bg-red-500 rounded-md hover:bg-red-600" onClick={onClose}>
                         Close
