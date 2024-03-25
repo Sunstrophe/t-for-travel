@@ -44,9 +44,9 @@ function Search({ map }) {
         <div className="flex justify-center px-4 pt-4 pb-4">
             <div className="w-full max-w-screen-sm">
                 <div className="flex">
-                    <button onClick={handleTest} className="px-6 py-4 ml-4 font-semibold text-white bg-blue-500 rounded-lg">
+                    {/* <button onClick={handleTest} className="px-6 py-4 ml-4 font-semibold text-white bg-blue-500 rounded-lg">
                         Test Button
-                    </button>
+                    </button> */}
                     <input
                         value={prompt}
                         onChange={handleInput}

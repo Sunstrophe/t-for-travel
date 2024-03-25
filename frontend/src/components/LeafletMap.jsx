@@ -5,34 +5,36 @@ import Search from "./Search";
 const originalCenter = [59.3342, 18.0586]
 
 function LeafletMap() {
-  // const mapRef = useRef(null);
   const [map, setMap] = useState(null)
-  // const [markerPosition, setMarkerPosition] = useState([59.3342, 18.0586]);
-  const [isLoading, setIsLoading] = useState(false)
-
-  // useEffect(() => {
-  //   console.log(markerPosition)
-  // }, [markerPosition])
-
-  // Loading if map not displayed
-  // useEffect(() => {
-  //   console.log(map)
-  //   if (map) {
-  //     setIsLoading(true)
-  //   }
-  //   else {
-  //     setIsLoading(false)
-  //   }
-  // }, [map])
 
 
+  // const getLatLng = () => {
+  //   console.log(map.getCenter())
 
+  // }
+
+
+  const getExperiences = async() => {
+    const mapCenter = map.getCenter()
+    const lat = mapCenter["lat"]
+    const lng = mapCenter["lng"]
+
+    const response = await fetch(`http://localhost:8000/experience?lat=${lat}&lng=${lng}`, {
+      method: "GET",
+    })
+    if (!response.ok) {
+      throw new Error("Error getting experiences")
+    }
+    const experiences = await response.json()
+    console.log(experiences)
+  }
 
 
   return (
     <div className="relative flex-col">
+      <button onClick={getExperiences}>test</button>
       <Search map={map} />
-      {isLoading ? (
+      {false ? (
         <p>Loading...</p>
       ) : (
         <MapContainer 
