@@ -88,7 +88,7 @@ function LoginMenu() {
         onClick={() => setMenuOpen(!menuOpen)}
         className="flex justify-between pt-1.5"
       >
-        <span className="mr-34 font-light">Login</span>
+        <span className="mr-34 pl-4 pb-1 text-white tracking-wide font-light">Login</span>
         <svg
           className="fill-gray-400 shrink-0 ml-8"
           width="16"
