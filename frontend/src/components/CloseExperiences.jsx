@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Marker, useMapEvent } from "react-leaflet";
+import { Marker, Popup, useMapEvent } from "react-leaflet";
+import ExpPopup from "./ExpPopup";
 
 function CloseExperiences() {
     const [experiences, setExeperiences] = useState(null);
@@ -20,6 +21,10 @@ function CloseExperiences() {
         setExeperiences(data);
     };
 
+
+    
+
+
     const map = useMapEvent({
         moveend() {
             // console.log("TEST!!!")
@@ -36,7 +41,9 @@ function CloseExperiences() {
 
         return experiences.map((experience) => {
             const { latitude, longitude } = experience;
-            return <Marker position={[latitude, longitude]} key={experience.id} />;
+            return <Marker position={[latitude, longitude]} key={experience.id}>
+                <ExpPopup experience={experience} />
+            </Marker>;
         });
     };
 
