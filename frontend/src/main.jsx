@@ -6,7 +6,7 @@ import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
-import Cookies from "./pages/Cookies";
+import Terms from "./pages/Terms";
 import Signup from "./pages/Signup";
 import Userpage from "./pages/Userpage";
 import PasswordResetPage from "./pages/PasswordResetPage";
@@ -22,7 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
-          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/userpage" element={<Userpage />} />
           <Route path="/passwordrecovery" element={<PasswordResetPage />} />

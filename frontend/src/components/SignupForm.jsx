@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function SignupForm() {
   let navigate = useNavigate();
@@ -20,7 +21,6 @@ export default function SignupForm() {
   const [termsError, setTermsError] = useState("");
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  
 
   function validateEmail() {
     let emailErrors = [];
@@ -100,12 +100,10 @@ export default function SignupForm() {
             hashed_password: password,
           }),
         });
-  
+
         const data = await response.json();
-  
-        console.log("Response:", response); // Log the entire response object
-        console.log("Response data:", data); // Log the response data
-  
+
+
         if (response.status === 201) {
           console.log("Success");
           setRegistrationSuccess(true);
@@ -128,6 +126,11 @@ export default function SignupForm() {
       <div className="flex flex-col justify-center flex-1 min-h-full px-6 py-12 lg:px-8">
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+            <img
+              src="https://www.shutterstock.com/shutterstock/photos/1806925870/display_1500/stock-vector-t-letter-logo-design-on-luxury-background-tt-monogram-initials-letter-logo-concept-t-icon-design-1806925870.jpg"
+              alt="Logo"
+              className="h-16 w-auto mx-auto mb-8"
+            />
             <div className="pt-4 pb-8 font-bold text-xl">
               Create a new account
             </div>
@@ -249,11 +252,11 @@ export default function SignupForm() {
                   checked={terms}
                   onChange={(e) => setTerms(e.target.checked)}
                 />
-                <label
-                  htmlFor="terms"
-                  className="block ml-2 text-sm text-gray-900"
-                >
-                  I agree to the terms and conditions
+                 <label htmlFor="terms" className="text-gray-700">
+                  I agree to the{" "}
+                  <Link to="/terms" className="rounded-lg underline hover:font-bold">
+                    Terms and Conditions
+                  </Link>
                 </label>
               </div>
               {termsError && (
@@ -261,45 +264,45 @@ export default function SignupForm() {
               )}
 
               <div>
-              <button
-  type="submit"
-  className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm focus:outline-none ${
-    email &&
-    password &&
-    confirmPassword &&
-    username &&
-    !emailError.length &&
-    !passwordError.length &&
-    !confirmPasswordError.length &&
-    !usernameError.length &&
-    terms
-      ? "bg-blue-500 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      : "bg-gray-400 cursor-not-allowed"
-  }`}
-  disabled={
-    !(
-      email &&
-      password &&
-      confirmPassword &&
-      username &&
-      !emailError.length &&
-      !passwordError.length &&
-      !confirmPasswordError.length &&
-      !usernameError.length &&
-      terms
-    )
-  }
->
-  Register
-</button>
+                <button
+                  type="submit"
+                  className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm focus:outline-none ${
+                    email &&
+                    password &&
+                    confirmPassword &&
+                    username &&
+                    !emailError.length &&
+                    !passwordError.length &&
+                    !confirmPasswordError.length &&
+                    !usernameError.length &&
+                    terms
+                      ? "bg-blue-500 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
+                  disabled={
+                    !(
+                      email &&
+                      password &&
+                      confirmPassword &&
+                      username &&
+                      !emailError.length &&
+                      !passwordError.length &&
+                      !confirmPasswordError.length &&
+                      !usernameError.length &&
+                      terms
+                    )
+                  }
+                >
+                  Register
+                </button>
                 {/* Confirmation message */}
                 {registrationSuccess && (
                   <>
-                  <p className="mt-2 text-sm text-green-600">
-                    Sent a confirmation email
-                  </p>
-                  {/* Button to navigate */}
-                  <button
+                    <p className="mt-2 text-sm text-green-600">
+                      Sent a confirmation email
+                    </p>
+                    {/* Button to navigate */}
+                    <button
                       type="button"
                       onClick={() => navigate("/")}
                       className="mt-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
