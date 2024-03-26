@@ -10,8 +10,7 @@ import os
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
-from app.database.models import TravelUser, Experience, ImageLink
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema
 from app.prompting import call_for_location
 from app.auth_endpoints import router as auth_router
 

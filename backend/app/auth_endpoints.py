@@ -40,7 +40,7 @@ def login(
     if not verify_password(form_data.password, traveluser.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Passwords do not match",
+            detail="Invalid password",
             headers={"WWW-Authenticate": "Bearer"},
         )
         

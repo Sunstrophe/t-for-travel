@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function SignupForm() {
   let navigate = useNavigate();
 
+   // State variables for form fields and errors
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState([]);
 
@@ -22,6 +23,7 @@ export default function SignupForm() {
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
+  // Function to validate email field
   function validateEmail() {
     let emailErrors = [];
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,6 +36,7 @@ export default function SignupForm() {
     setEmailError(emailErrors);
   }
 
+  // Function to validate password field
   function validatePassword() {
     let passwordErrors = [];
     const regex = /[^a-zA-Z0-9]/;
@@ -49,6 +52,7 @@ export default function SignupForm() {
     setPasswordError(passwordErrors);
   }
 
+  // Function for confirming password
   function validateConfirmPassword() {
     let confirmPasswordErrors = [];
     if (password !== confirmPassword) {
@@ -57,6 +61,7 @@ export default function SignupForm() {
     setConfirmPasswordError(confirmPasswordErrors);
   }
 
+  // Function to validate username
   function validateUsername() {
     let errors = [];
     if (!username) {
@@ -65,6 +70,7 @@ export default function SignupForm() {
     setUsernameError(errors);
   }
 
+  // Function to validate terms
   function validateTerms() {
     if (!terms) {
       setTermsError("You must accept our terms to continue");
@@ -73,6 +79,7 @@ export default function SignupForm() {
     }
   }
 
+   // Function to handle form submission
   async function submitRegister(e) {
     e.preventDefault();
     validateEmail();
@@ -81,6 +88,7 @@ export default function SignupForm() {
     validateUsername();
     validateTerms();
 
+    // Check if there are no errors in form fields
     if (
       emailError.length === 0 &&
       passwordError.length === 0 &&
@@ -103,7 +111,7 @@ export default function SignupForm() {
 
         const data = await response.json();
 
-
+        // Check response status
         if (response.status === 201) {
           console.log("Success");
           setRegistrationSuccess(true);
@@ -295,7 +303,7 @@ export default function SignupForm() {
                 >
                   Register
                 </button>
-                {/* Confirmation message */}
+                {/* Confirmation message if no errors */}
                 {registrationSuccess && (
                   <>
                     <p className="mt-2 text-sm text-green-600">
