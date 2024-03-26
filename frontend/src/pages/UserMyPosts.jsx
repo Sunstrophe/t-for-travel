@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import placeholderImage from "../assets/placeholder_image.jpg"
+import placeholderImage from "../assets/placeholder_image.jpg";
+import { Link } from "react-router-dom";
 
 function UserMyPosts() {
     const [userPosts, setUserPosts] = useState([]);
@@ -18,27 +19,28 @@ function UserMyPosts() {
         setUserPosts(data);
     };
 
+    // const sendToExperience = (experience_id) => {
+    //     <Navigate to="" />
+    // }
+
     return (
-        <div className="max-h-full px-8 py-6 overflow-y-auto">
-            <div className="flex flex-col gap-4">
-                {userPosts.length === 0 ? (
-                    <p>Nothing posted!</p>
-                ) : (
-                    userPosts.map((experience, index) => {
-                        return (
-                            <div className="grid grid-cols-3 border-2 border-black h-60" key={index}>
-                                <div className="flex flex-col col-span-2 gap-2 p-4">
-                                    <h4 className="text-lg font-bold text-center">{experience.title}</h4>
-                                    <p className="text-sm">{experience.description}</p>
-                                </div>
-                                <div className="flex items-center justify-center col-span-1">
-                                    <img className="w-auto h-auto max-w-full max-h-full" src={placeholderImage} alt="Placeholder" />
-                                </div>
+        <div className="grid max-h-full grid-cols-3 gap-4 px-8 py-6 overflow-y-auto">
+            {userPosts.length === 0 ? (
+                <p>Nothing posted!</p>
+            ) : (
+                userPosts.map((experience, index) => {
+                    return (
+                        <Link to={`/experience/${experience.id}`} key={index} >
+                            <div
+                                className="overflow-hidden border rounded-lg shadow-lg"
+                            >
+                                <h4 className="text-lg font-bold text-center text-ellipsis">{experience.title}</h4>
+                                <img className="w-auto h-auto max-w-full max-h-full" src={placeholderImage} alt="Placeholder" />
                             </div>
-                        );
-                    })
-                )}
-            </div>
+                        </Link>
+                    );
+                })
+            )}
         </div>
     );
 }
