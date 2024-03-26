@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import Userpage from "./pages/Userpage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 import ResetConfirmationPage from "./pages/ResetConfirmationPage";
+import "leaflet/dist/leaflet.css"
 
 
 function App() {

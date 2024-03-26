@@ -47,8 +47,6 @@ app.include_router(auth_router)
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
-# Works with local directory eg. C:/User/{username}/Pictures/test/
-IMAGEDIR = "E:/test/"
 
 
 # @user_router.post("/", status_code=201)
@@ -92,9 +90,12 @@ def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) ->
     return users
 
 
+app.include_router(user_router, prefix="/user", tags=["user"])
+
 ############################################################
 # Experiences
 ############################################################
+
 
 @experience_router.post("/", status_code=201)
 def create_experience(experience: ExperienceSchema, db: Session = Depends(get_db)):
@@ -113,75 +114,65 @@ def get_experience(experience_id: int, db: Session = Depends(get_db)) -> Experie
         raise HTTPException(status_code=404, detail="Experience not found!")
     return db_experience
 
-#################################################################
-# @experience_router.patch("/{title}", status_code=200)
-# @app.patch("/experience/{title}", status_code=200)
-# def update_experience(title: str, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
-#     try:
-#         # Check if the experience exists
-#         db_experience = db.query(Experience).filter(
-#             Experience.title == title).first()
-#         db_experience = db.query(Experience).filter(
-#             Experience.title == title).first()
-#         if not db_experience:
-#             raise HTTPException(
-#                 status_code=404, detail="Experience not found!")
-#         # Update only the specified fields
-#         for field, value in updated_experience.dict(exclude_unset=True).items():
-#             setattr(db_experience, field, value)
-#         db.commit()
-#         return db_experience
-#     except Exception as e:
-#         db.rollback()
-#         raise HTTPException(status_code=500, detail=str(e))
-######################################################################
+
+@experience_router.patch("/{experience_id}", status_code=200)
+def update_experience(experience_id: int, updated_experience: ExperienceUpdateSchema, db: Session = Depends(get_db)) -> ExperienceSchema:
+    db_experience = crud.get_experience(db=db, experience_id=experience_id)
+    if not db_experience:
+        raise HTTPException(status_code=404, detail="Experience not found!")
+    try:
+        db_experience = crud.update_experience(
+            db=db, db_experience=db_experience, updated_experience=updated_experience)
+        return db_experience
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+app.include_router(experience_router, prefix="/experience",
+                   tags=["experience"])
 
 ############################################################
 # Images
 ############################################################
 
+# Works with local directory eg. C:/User/{username}/Pictures/test/
+IMAGEDIR = "E:/test/"
+
 
 @image_router.post("/", status_code=201)
-async def upload_image(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
+async def upload_image(file: UploadFile):
+    print(file.size)
+    if file.size > 1000000:
+        raise HTTPException(status_code=413, detail="Size of image to large")
     accepted_img_extensions = ['jpg', 'jpeg', 'bmp', 'webp', 'png']
-    try:
-        for file in files:
-            filename = file.filename
-            filename_splitted = filename.split(".")
-            file_extension = filename_splitted[-1]
-            if file_extension not in accepted_img_extensions:
-                raise HTTPException(
-                    status_code=400, detail="Image extension is not supported")
-            new_img_name = uuid4()
-            file.filename = f"{new_img_name}.{file_extension}"
-            contents = await file.read()
-            with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-                f.write(contents)
+    filename = file.filename
+    filename_splitted = filename.split(".")
+    file_extension = filename_splitted[-1]
+    if file_extension not in accepted_img_extensions:
+        raise HTTPException(
+            status_code=415, detail="Image extension is not supported")
+    new_img_name = uuid4()
+    file.filename = f"{new_img_name}.{file_extension}"
+    contents = await file.read()
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+    return {"filename": file.filename}
 
-    # Uploads to database -> Probably want to move this to experience
-        for i, file in enumerate(files):
-            print(f"Test: {file.filename}")
-            db_file = ImageLinkSchema(image_link=file.filename, order=i)
-            db_image_link = ImageLink(**db_file.model_dump())
-            db.add(db_image_link)
-            db.commit()
-    except Exception as e:
-        # return {"message": "There was an error uploading the file(s)",
-        #         "error": e}
-        raise e
-    return {"uploaded_image(s): ": [file.filename for file in files]}
+
+@image_router.delete("/", status_code=200)
+async def delete_image(filename: str):
+    if os.path.exists(f"{IMAGEDIR}{filename}"):
+        os.remove(f"{IMAGEDIR}{filename}")
+        return {"file deleted": filename}
+    raise HTTPException(status_code=404, detail=f"{filename} not found")
 
 
 @image_router.get("/{image_name}", status_code=200)
 def get_image(image_name: str):
-    # images = os.listdir(IMAGEDIR)
     return FileResponse(f"{IMAGEDIR}{image_name}")
 
 
-app.include_router(user_router, prefix="/user", tags=["user"])
-app.include_router(experience_router, prefix="/experience",
-                   tags=["experience"])
-app.include_router(image_router, prefix="/images", tags=["images"])
+app.include_router(image_router, prefix="/image", tags=["image"])
 
 
 @app.get("/location", status_code=200)

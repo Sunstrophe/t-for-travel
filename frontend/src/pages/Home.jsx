@@ -9,7 +9,7 @@ function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-center items-center px-20 pb-4 z-0 h-full">
+      <div className="z-0 flex items-center justify-center h-full px-20 pb-4">
         <div className="w-full lg:w-3/4 xl:w-2/3">
           <LeafletMap onSearch={handleSearch} />
         </div>
