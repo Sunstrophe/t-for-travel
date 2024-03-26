@@ -10,8 +10,8 @@ import os
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
-from app.database.models import TravelUser, Experience, ImageLink
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ImageLinkSchema
+from app.database.models import TravelUser, Experience
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema
 from app.prompting import call_for_location
 from app.auth_endpoints import router as auth_router
 
@@ -82,6 +82,15 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> TravelUserSchema:
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found!")
     return db_user
+
+
+@user_router.get("/{user_id}/experience", status_code=200)
+def get_user_experience(user_id: int, limit: int = 20, db: Session = Depends(get_db)) -> list[ExperienceSchema]:
+    db_user = crud.get_user(db=db, user_id=user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found!")
+
+    return crud.get_user_experience(db=db, user_id=user_id, limit=limit)
 
 
 @user_router.get("/", status_code=200)
