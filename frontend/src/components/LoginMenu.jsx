@@ -184,7 +184,7 @@ function LoginMenu() {
                 <div className="mt-6 text-sm font-light text-gray-500 text-center">
                   Don't have an account?
                 </div>
-                <div className="underline hover:text-gray-500 text-center">
+                <div className=" hover:text-gray-500 hover:underline text-center">
                   <Link to="/signup">Sign up here</Link>
                 </div>
               </div>
