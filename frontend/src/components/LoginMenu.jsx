@@ -65,7 +65,8 @@ function LoginMenu() {
         if (response.ok) {
             console.log("Login successful");
             setToken(data.access_token);
-            navigate("/userpage");
+            setMenuOpen(false)
+            // navigate("/userpage");
           
         } else {
             console.log("Login failed");
@@ -88,9 +89,9 @@ function LoginMenu() {
         onClick={() => setMenuOpen(!menuOpen)}
         className="flex justify-between pt-1.5"
       >
-        <span className="mr-34 pl-4 pb-1 text-white tracking-wide font-light">Login</span>
+        <span className="pb-1 pl-4 font-light tracking-wide text-white mr-34">Login</span>
         <svg
-          className="fill-gray-400 shrink-0 ml-8"
+          className="ml-8 fill-gray-400 shrink-0"
           width="16"
           height="16"
           xmlns="http://www.w3.org/2000/svg"
@@ -117,9 +118,10 @@ function LoginMenu() {
       </button>
 
       {menuOpen && (
-        <div className="absolute top-full mt-4  bg-white rounded-md shadow-md md:w-96 right-0">
+        <div className="absolute right-0 mt-4 bg-white rounded-md shadow-md top-full md:w-96">
           <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
             <form onSubmit={submitLogin} className="space-y-6" noValidate>
+              {/* EMAIL FIELD */}
               <div>
                 <label
                   htmlFor="email"
@@ -140,7 +142,7 @@ function LoginMenu() {
                   <p className="mt-2 text-sm text-red-600">{emailError}</p>
                 )}
               </div>
-
+              {/* PW FIELD */}
               <div>
                 <label
                   htmlFor="password"
@@ -160,7 +162,7 @@ function LoginMenu() {
                   <p className="mt-2 text-sm text-red-600">{passwordError}</p>
                 )}
               </div>
-
+              {/* ERROR MSG */}
               <div className="my-2">
                 {serverError && (
                   <p className="mt-2 text-sm text-red-600">{serverError}</p>
@@ -181,11 +183,11 @@ function LoginMenu() {
 
               {/* Clickable link to signup page*/}
               <div className="my-10">
-                <div className="mt-6 text-sm font-light text-gray-500 text-center">
+                <div className="mt-6 text-sm font-light text-center text-gray-500">
                   Don't have an account?
                 </div>
-                <div className=" hover:text-gray-500 hover:underline text-center">
-                  <Link to="/signup">Sign up here</Link>
+                <div className="text-center hover:text-gray-500 hover:underline">
+                  <Link to="/signup" onClick={() => setMenuOpen(false)}>Sign up here</Link>
                 </div>
               </div>
             </form>

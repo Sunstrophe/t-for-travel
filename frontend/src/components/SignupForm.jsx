@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+// import useAuthStore from "../stores/store";
 
 export default function SignupForm() {
   let navigate = useNavigate();
@@ -22,6 +23,9 @@ export default function SignupForm() {
   const [termsError, setTermsError] = useState("");
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+
+  // So we can login
+  // const { setToken, token } = useAuthStore();
 
   // Function to validate email field
   function validateEmail() {
@@ -128,6 +132,51 @@ export default function SignupForm() {
       console.log("Error in form");
     }
   }
+  
+  // Attempt to implement a redirect and login when register
+
+  // async function submitLogin(e) {
+  //   e.preventDefault();
+  //   setServerError("");
+  //   setLoading(true);
+  //   const isEmailValid = validateEmail();
+  //   const isPasswordValid = validatePassword();
+
+  //   if (isEmailValid && isPasswordValid) {
+  //     const formData = new FormData();
+  //     formData.append("username", email);
+  //     formData.append("password", password);
+      
+  //     try {
+  //       const response = await fetch("http://localhost:8000/user/token", {
+  //           method: "POST",
+  //           body: formData,
+  //       });
+    
+    
+  //       const data = await response.json(); // Read the response body here
+    
+  //       if (response.ok) {
+  //           console.log("Login successful");
+  //           setToken(data.access_token);
+  //           // setMenuOpen(false)
+  //           console.log("HERE!!!")
+  //           navigate("/userpage");
+          
+  //       } else {
+  //           console.log("Login failed");
+  //           setServerError(data.detail);
+  //       }
+  //   } catch (error) {
+  //       console.error("Error during login:", error);
+  //       setServerError("An unexpected error occurred. Please try again later.");
+  //   } finally {
+  //       setLoading(false);
+  //   }
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }
 
   return (
     <>
@@ -137,12 +186,13 @@ export default function SignupForm() {
             <img
               src="https://www.shutterstock.com/shutterstock/photos/1806925870/display_1500/stock-vector-t-letter-logo-design-on-luxury-background-tt-monogram-initials-letter-logo-concept-t-icon-design-1806925870.jpg"
               alt="Logo"
-              className="h-16 w-auto mx-auto mb-8"
+              className="w-auto h-16 mx-auto mb-8"
             />
-            <div className="pt-4 pb-8 font-bold text-xl">
+            <div className="pt-4 pb-8 text-xl font-bold">
               Create a new account
             </div>
             <form className="space-y-6" onSubmit={submitRegister}>
+              {/* EMAIL FIELD */}
               <div>
                 <label
                   htmlFor="email"
@@ -169,7 +219,7 @@ export default function SignupForm() {
                   ))}
                 </div>
               </div>
-
+              {/* USERNAME FIELD */}
               <div>
                 <label
                   htmlFor="username"
@@ -196,7 +246,7 @@ export default function SignupForm() {
                   ))}
                 </div>
               </div>
-
+              {/* PW FIELD */}
               <div>
                 <label
                   htmlFor="password"
@@ -223,7 +273,7 @@ export default function SignupForm() {
                   ))}
                 </div>
               </div>
-
+              {/* CONFIRM PW FIELD */}
               <div>
                 <label
                   htmlFor="confirm_password"
@@ -250,7 +300,7 @@ export default function SignupForm() {
                   )}
                 </div>
               </div>
-
+              {/* T&S FIELD */}
               <div className="flex items-center">
                 <input
                   id="terms"
@@ -260,9 +310,9 @@ export default function SignupForm() {
                   checked={terms}
                   onChange={(e) => setTerms(e.target.checked)}
                 />
-                 <label htmlFor="terms" className="text-gray-700">
+                 <label htmlFor="terms" className="ml-3 text-gray-700">
                   I agree to the{" "}
-                  <Link to="/terms" className="rounded-lg underline hover:font-bold">
+                  <Link to="/terms" className="underline rounded-lg hover:font-bold">
                     Terms and Conditions
                   </Link>
                 </label>
@@ -272,6 +322,7 @@ export default function SignupForm() {
               )}
 
               <div>
+                {/* REGISTER BUTTON */}
                 <button
                   type="submit"
                   className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm focus:outline-none ${
@@ -313,7 +364,7 @@ export default function SignupForm() {
                     <button
                       type="button"
                       onClick={() => navigate("/")}
-                      className="mt-2 px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="px-4 py-2 mt-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       Navigate to Main Page
                     </button>

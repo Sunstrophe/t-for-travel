@@ -11,8 +11,8 @@ function Header() {
         if (token) {
             fetchUser();
         }
-        console.log(userData)
-    }, []);
+        // console.log(userData)
+    }, [token]);
 
     useEffect(() => {
         let prevScrollPos = window.scrollY;
@@ -52,7 +52,7 @@ function Header() {
                 />
             </Link>
             <div className="p-2 mr-24 border border-gray-500 rounded-lg shadow-lg bg bg-slate-800">
-                {!userData ? <LoginMenu /> : <LoggedInButton userData={userData} />}
+                {!token || !userData ? <LoginMenu /> : <LoggedInButton userData={userData} />}
             </div>
         </header>
     );

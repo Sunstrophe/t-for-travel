@@ -54,8 +54,7 @@ class TravelUserSchema(BaseModel):
 class TravelUserOutSchema(BaseModel):
     id: int
     email: EmailStr
-    last_name: str | None = None
-    first_name: str | None = None
+    username: str | None = None
 
 
 class ExperienceSchema(BaseModel):

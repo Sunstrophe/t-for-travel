@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Marker, Popup, useMapEvent } from "react-leaflet";
+import { Marker, useMapEvent } from "react-leaflet";
 import ExpPopup from "./ExpPopup";
 
 function CloseExperiences() {
@@ -17,7 +17,7 @@ function CloseExperiences() {
             throw new Error("Error getting experiences");
         }
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setExeperiences(data);
     };
 

@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMapEvent } from 'react-leaflet';
+import React, { useState } from "react";
+import { MapContainer, TileLayer, } from 'react-leaflet';
 import Search from "./Search";
 import CloseExperiences from "./CloseExperiences";
 
@@ -8,19 +8,8 @@ const originalCenter = [59.3342, 18.0586]
 function LeafletMap() {
   const [map, setMap] = useState(null)
 
-
-  // const getLatLng = () => {
-  //   console.log(map.getCenter())
-
-  // }
-  
-
-  
-
-
   return (
     <div className="relative flex-col">
-      {/* <button onClick={getExperiences}>test</button> */}
       <Search map={map} />
       {false ? (
         <p>Loading...</p>
