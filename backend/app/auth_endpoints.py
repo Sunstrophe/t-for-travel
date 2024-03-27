@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status, Response, Depends, APIRouter
 from app.db_setup import get_db
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update, delete, insert
+# from sqlalchemy import select, update, delete, insert
 from fastapi import Request, BackgroundTasks
 from sqlalchemy.exc import IntegrityError
 from app.database.models import TravelUser
@@ -9,7 +9,7 @@ from app.schemas import NewPasswordSchema, Token, TravelUserSchema, TravelUserOu
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Annotated
 from app.security import hash_password, verify_password, create_access_token, get_current_user
-from pydantic import ValidationError
+# from pydantic import ValidationError
 from datetime import timedelta
 from pprint import pprint
 from dotenv import load_dotenv
@@ -28,8 +28,9 @@ router = APIRouter(tags=["auth"])
 
 @router.post("/user/token")
 def login(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)) -> Token:
-    traveluser = db.query(TravelUser).filter(TravelUser.email == form_data.username).first()
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)) -> Token:
+    traveluser = db.query(TravelUser).filter(
+        TravelUser.email == form_data.username).first()
     # user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not traveluser:
         raise HTTPException(
@@ -43,7 +44,7 @@ def login(
             detail="Invalid password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
+
     access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     access_token = create_access_token(
         data={"sub": str(traveluser.id)}, expires_delta=access_token_expires
@@ -76,6 +77,7 @@ def register_user(user_data: UserRegisterSchema, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return new_user
+
 
 @router.get("/me", response_model=TravelUserOutSchema)
 def read_users_me(current_user: Annotated[TravelUser, Depends(get_current_user)]):

@@ -37,13 +37,12 @@ def create_access_token(data: dict, expires_delta: timedelta):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
 
-    to_encode.update({"exp": expire}) 
+    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
 def verify_token_access(token: str, credentials_exception: HTTPException):
-    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         token_data = TokenPayload(**payload)
@@ -59,9 +58,10 @@ def verify_token_access(token: str, credentials_exception: HTTPException):
             detail="Token expired",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    except JWTError as e:
+    except JWTError:
         raise credentials_exception
     return token_data
+
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
@@ -70,5 +70,8 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session 
         headers={"WWW-Authenticate": "Bearer"},
     )
     token_data = verify_token_access(token, credentials_exception)
-    user = db.scalars(select(TravelUser).where(TravelUser.id == token_data.sub)).first()
+    user = db.scalars(select(TravelUser).where(
+        TravelUser.id == token_data.sub)).first()
+    if user is None:
+        raise credentials_exception
     return user
