@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
 # from app.database.models import TravelUser, Experience
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ExperienceMapSchema, ExperienceOutSchema, ContactSchema
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ExperienceMapSchema, ExperienceOutSchema, ContactSchema, TravelUserOutSchema
 from app.prompting import call_for_location
 from app.auth_endpoints import router as auth_router
 
@@ -78,7 +78,7 @@ def create_user(user: TravelUserSchema, db: Session = Depends(get_db)):
 
 
 @user_router.get("/{user_id}", status_code=200)
-def get_user(user_id: int, db: Session = Depends(get_db)) -> TravelUserSchema:
+def get_user(user_id: int, db: Session = Depends(get_db)) -> TravelUserOutSchema:
     db_user = crud.get_user(db=db, user_id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found!")
