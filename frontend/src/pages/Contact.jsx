@@ -121,7 +121,6 @@ function Contact() {
           setDescriptionError("");
           setCountryError("");
           setTermsError("");
-          
         } else {
           console.log("Something went wrong");
           console.log("Error status:", response.status); // Log the response status
@@ -141,7 +140,7 @@ function Contact() {
       <div className="flex-auto">
         <div className="container mx-auto relative">
           <form className="mt-8 relative z-0" onSubmit={submitContactForm}>
-            <div className="p-8 pl-20 my-10 border border-gray-300 rounded-lg bg-white shadow-md w-[75%] relative z-0">
+            <div className="p-8 pl-20 my-10 border border-gray-300 rounded-lg bg-gradient-to-b from-gray-100 to-gray-200 shadow-md w-[75%] relative z-0">
               <img
                 src="https://www.shutterstock.com/shutterstock/photos/1806925870/display_1500/stock-vector-t-letter-logo-design-on-luxury-background-tt-monogram-initials-letter-logo-concept-t-icon-design-1806925870.jpg"
                 alt="Logo"
@@ -330,8 +329,8 @@ function Contact() {
                     email &&
                     description &&
                     termsOfAgreement
-                      ? "bg-blue-500 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
-                      : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                      ? "bg-gray-800 shadow-md text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
+                      : "bg-gray-400 shadow-md text-gray-100 cursor-not-allowed"
                   }`}
                   disabled={
                     formErrors.length !== 0 ||
@@ -346,8 +345,30 @@ function Contact() {
                 </button>
                 {/* Conditional rendering of success message */}
                 {submitForm && (
-                  <div className="mt-4 text-green-800">
-                    We will get back to you soon.
+                  <div>
+                    <div className="mt-4 text-green-800">
+                      We will get back to you soon.
+                    </div>
+                    <p className="text-gray-600 mb-4 text-left max-w-4xl mx-auto px-4">
+                      <button
+                        onClick={() => window.history.back()} // Go back to the previous page
+                        className="bg-gray-800 text-white px-3 py-2 rounded-md border-r border-gray-100 hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center"
+                      >
+                        <svg
+                          class="w-5 mr-2"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
+                        Previous page
+                      </button>
+                    </p>
                   </div>
                 )}
               </div>

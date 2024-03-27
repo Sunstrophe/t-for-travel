@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Terms() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-opacity-50">
-      <div className="max-w-3xl w-full mx-auto p-14 bg-white shadow-md rounded-lg">
+      <div className="max-w-3xl w-full mx-auto p-14 bg-gradient-to-b from-gray-100 to-zinc-200 shadow-md rounded-lg">
         <h2 className="text-2xl font-bold mb-10">
           Terms of Service and privacy policy
         </h2>

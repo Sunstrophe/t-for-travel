@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 function About() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-100 to-gray-200">
-      <div className="max-w-3xl w-full mx-auto p-8 bg-opacity-50 shadow-lg rounded-lg">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-opacity-50 ">
+      <div className="max-w-3xl w-full mx-auto p-8 bg-gradient-to-b from-gray-100 to-gray-200 shadow-md rounded-lg">
         <img
           src="https://www.shutterstock.com/shutterstock/photos/1806925870/display_1500/stock-vector-t-letter-logo-design-on-luxury-background-tt-monogram-initials-letter-logo-concept-t-icon-design-1806925870.jpg"
           alt="Logo"
