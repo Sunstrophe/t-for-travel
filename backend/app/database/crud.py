@@ -54,3 +54,15 @@ def update_experience(db: Session, db_experience: models.Experience, updated_exp
 
 def get_user_experience(db: Session, user_id: int, limit: int):
     return db.query(models.Experience).filter(models.Experience.user_id == user_id).limit(limit)
+
+
+def create_contact(db: Session, contact: schemas.ContactSchema):
+    db_contact = models.Contact(**contact.model_dump())
+    db.add(db_contact)
+    db.commit()
+    db.refresh(db_contact)
+    return db_contact
+
+
+def get_contact(db: Session, email: str):
+    return db.query(models.Contact).filter(models.Contact.email == email).first()

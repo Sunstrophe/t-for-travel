@@ -59,6 +59,19 @@ class Experience(Base):
         return f"<Experience={self.title}>"
 
 
+class Contact(Base):
+    __tablename__ = "contact"
+
+    title: Mapped[str] = mapped_column(String(100))
+    name: Mapped[str] = mapped_column(String(255))
+    country: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str] = mapped_column(String(2000), unique=True)
+    email: Mapped[str]
+    
+    
+    def __repr__(self) -> str:
+        return f"<Contact={self.title}>"
+    
 # class ImageLink(Base):
 #     __tablename__ = "images"
 

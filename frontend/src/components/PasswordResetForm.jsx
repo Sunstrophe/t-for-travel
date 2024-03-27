@@ -32,7 +32,7 @@ const PasswordResetForm = () => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      // No body is needed for this request as the email is passed via URL
+      
     };
 
     try {
@@ -44,7 +44,7 @@ const PasswordResetForm = () => {
       }
       // Assuming the response is JSON, parse it
       const data = await response.json();
-      setSuccess("Vi har skickat ett mail för återställning till dig"); // Set the success message
+      setSuccess("We have sent an email for password recovery"); // Set the success message
     } catch (error) {
       // Log or handle the error as needed
       console.error("There was an error!", error);
