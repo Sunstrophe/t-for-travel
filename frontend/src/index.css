@@ -35,6 +35,8 @@ body {
   margin: 0px;
 }
 
-.popup-request .leaflet-popup-content p {
-  margin: 0px;
+
+.leaflet-container a {
+  color: inherit;
+  text-overflow: ellipsis;
 }

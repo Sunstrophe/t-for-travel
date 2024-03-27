@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "leaflet/dist/leaflet.css"
 import "./index.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Layout from "./pages/Layout";
@@ -12,7 +13,6 @@ import Userpage from "./pages/Userpage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 import ResetConfirmationPage from "./pages/ResetConfirmationPage";
 import ExeperienceDetail from "./pages/ExperienceDetail"
-import "leaflet/dist/leaflet.css"
 
 
 function App() {
