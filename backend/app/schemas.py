@@ -86,6 +86,18 @@ class ExperienceSchema(BaseModel):
                 "is_public": False
             }
         })
+    
+
+class ExperienceOutSchema(BaseModel):
+    id: int
+    title: str
+    description: str | None = None
+    image: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    user_id: int | None = None
+    is_positive: bool | None = True
+    is_public: bool | None = True
 
 
 class UserRegisterSchema(BaseModel):

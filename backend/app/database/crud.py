@@ -43,3 +43,6 @@ def update_experience(db: Session, db_experience: models.Experience, updated_exp
     print("test")
     return db_experience
 
+
+def get_user_experience(db: Session, user_id: int, limit: int):
+    return db.query(models.Experience).filter(models.Experience.user_id == user_id).limit(limit)

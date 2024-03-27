@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import Userpage from "./pages/Userpage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 import ResetConfirmationPage from "./pages/ResetConfirmationPage";
+import ExeperienceDetail from "./pages/ExperienceDetail"
 import "leaflet/dist/leaflet.css"
 
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/userpage" element={<Userpage />} />
           <Route path="/passwordrecovery" element={<PasswordResetPage />} />
           <Route path="/resetpassword" element={<ResetConfirmationPage />} />
+          <Route path="/experience/:experience_id" element={<ExeperienceDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>
