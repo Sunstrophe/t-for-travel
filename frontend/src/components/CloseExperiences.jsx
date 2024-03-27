@@ -21,10 +21,6 @@ function CloseExperiences() {
         setExeperiences(data);
     };
 
-
-    
-
-
     const map = useMapEvent({
         moveend() {
             // console.log("TEST!!!")
