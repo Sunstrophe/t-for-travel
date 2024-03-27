@@ -23,7 +23,7 @@ function Search({ map }) {
                 console.log(data);
                 // console.log(data[0]["latitude"])
                 // console.log(data[0]["longitude"])
-                map.setView([data["latitude"], data["longitude"]], map.getZoom())
+                map.setView([data[0]["latitude"], data[0]["longitude"]], map.getZoom())
             })
             .catch((error) => {
                 // Handle fetch errors
@@ -44,9 +44,9 @@ function Search({ map }) {
         <div className="flex justify-center px-4 pt-4 pb-4">
             <div className="w-full max-w-screen-sm">
                 <div className="flex">
-                    <button onClick={handleTest} className="px-6 py-4 ml-4 font-semibold text-white bg-blue-500 rounded-lg">
+                    {/* <button onClick={handleTest} className="px-6 py-4 ml-4 font-semibold text-white bg-blue-500 rounded-lg">
                         Test Button
-                    </button>
+                    </button> */}
                     <input
                         value={prompt}
                         onChange={handleInput}

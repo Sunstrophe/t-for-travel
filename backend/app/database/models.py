@@ -47,11 +47,6 @@ class Experience(Base):
 
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(String(255), nullable=True)
-    # country: Mapped["Country"] = relationship(
-    #     "Country", back_populates="users")
-    # country_id: Mapped[int] = mapped_column(ForeignKey(
-    #     "country.id", ondelete="SET NULL"), nullable=True)
-    # images: Mapped[list["ImageLink"]] = relationship("ImageLink", back_populates="experience")
     image: Mapped[str] = mapped_column(String(255), nullable=True)
     latitude: Mapped[float] = mapped_column(nullable=True)
     longitude: Mapped[float] = mapped_column(nullable=True)

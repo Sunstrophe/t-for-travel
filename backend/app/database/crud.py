@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 from app.database import models
 from app import schemas
 
@@ -29,6 +30,13 @@ def create_experience(db: Session, experience: schemas.ExperienceSchema):
     db.commit()
     db.refresh(db_experience)
     return db_experience
+
+
+def get_close_experiences(db: Session, lat: float, lng: float):
+    print("in function!!!!")
+    query = db.query(models.Experience).filter(func.abs(models.Experience.latitude - lat) <= 1, func.abs(models.Experience.longitude - lng) <= 1).all()
+    print(query)
+    return query
 
 
 def get_experience(db: Session, experience_id: int):

@@ -65,7 +65,6 @@ class ExperienceSchema(BaseModel):
     description: str = Field(..., max_length=255,
                              description="The description of the experience.",
                              )
-    # country_id: int = Field(..., description="id for which country it is in")
     image: str | None = None
     latitude: float | None = None
     longitude: float | None = None
@@ -81,7 +80,7 @@ class ExperienceSchema(BaseModel):
                 "image": None,
                 "latitude": 59.3342,
                 "longitude": 18.0586,
-                "user_id": 1,
+                "user_id": None,
                 "is_positive": True,
                 "is_public": False
             }
@@ -117,16 +116,12 @@ class ExperienceUpdateSchema(BaseModel):
     is_positive: Optional[bool] = None
     is_public: Optional[bool] = None
 
-    # country_id: Optional[int] = Field(
-    #     None, description="id for which country it is in")
 
-# class ImageLinkSchema(BaseModel):
-#     image_link: str
-#     order: int
-
-#     model_config = ConfigDict(from_attributes=True, json_schema_extra={
-#         "example": {
-#             "image_link": "https://example.com/images/001",
-#             "order": 1
-#         }
-#     })
+class ExperienceMapSchema(BaseModel):
+    title: str
+    description: str
+    image: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    is_positive: bool | None = True
+    is_public: bool | None = True
