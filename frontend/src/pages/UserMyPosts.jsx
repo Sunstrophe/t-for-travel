@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import placeholderImage from "../assets/placeholder_image.jpg";
 import { Link } from "react-router-dom";
 
-function UserMyPosts({ userData }) {
+function UserMyPosts({ userData, remountMyPosts }) {
     const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
         getUserPosts();
-    }, []);
+    }, [remountMyPosts]);
 
     const getUserPosts = async () => {
         // Url for user will be implemented in the future

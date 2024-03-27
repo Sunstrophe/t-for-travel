@@ -18,21 +18,20 @@ function Userpage() {
 
     function handleLogout() {
         logout();
-        navigate("/login");
+        navigate("/");
     }
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [posts, setPosts] = useState([]);
-    const [selectedPostIndex, setSelectedPostIndex] = useState(null);
     const [selectedPage, setSelectedPage] = useState("UserMyPosts");
+    const [remountMyPosts, setRemountMyPosts] = useState(false)
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
-
+    
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedPostIndex(null);
+        setRemountMyPosts(prev => !prev)
     };
 
     const setMyPosts = () => {
@@ -79,17 +78,17 @@ function Userpage() {
                             <div className="flex flex-col items-center">
                                 <div className="flex flex-col items-start">
                                     <button onClick={setUserSettings}>Settings</button>
-                                    <button className="font-bold text-red-500">Logout</button>
+                                    <button className="font-bold text-red-500" onClick={handleLogout}>Logout</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {/* Center POSTS */}
-                    {selectedPage === "UserMyPosts" ? <UserMyPosts userData={userData} /> : null}
+                    {selectedPage === "UserMyPosts" ? <UserMyPosts userData={userData} remountMyPosts={remountMyPosts} /> : null}
                     {selectedPage === "UserFollowedPosts" ? <UserFollowedPosts /> : null}
                     {selectedPage === "UserSettings" ? <UserSettings /> : null}
                     {/* MODAL */}
-                    {isModalOpen && <UserExperiencePost onClose={handleCloseModal} />}
+                    {isModalOpen && <UserExperiencePost key={remountMyPosts ? "1" : "0"} onClose={handleCloseModal} userData={userData} />}
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@ import UserMarker from "./UserMarker";
 
 const sthlmCenter = [59.3342, 18.0586];
 
-function UserExperiencePost({ onClose }) {
+function UserExperiencePost({ onClose, userData }) {
     const [title, setTitle] = useState("");
     const [isTitleOOB, setIsTitleOOB] = useState(true)
     const [description, setDescription] = useState("");
@@ -16,7 +16,6 @@ function UserExperiencePost({ onClose }) {
     const [isPublic, setIsPublic] = useState(true);
     const [map, setMap] = useState(null);
     const [inputTouched, setInputTouched] = useState(false)
-    const [userData, setUserData] = useState(null)
 
     let newPost = {}
 
@@ -25,10 +24,6 @@ function UserExperiencePost({ onClose }) {
     useEffect(() => {
         adjustModalPosition();
     }, []);
-
-    useEffect(() => {
-        setUserData(localStorage.getItem("userData"))
-    }, [])
 
     const adjustModalPosition = () => {
         const contentHeight = modalContentRef.current.clientHeight;
