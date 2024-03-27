@@ -24,23 +24,25 @@ function UserMyPosts() {
     // }
 
     return (
-        <div className="grid max-h-full grid-cols-3 gap-4 px-8 py-6 overflow-y-auto">
-            {userPosts.length === 0 ? (
-                <p>Nothing posted!</p>
-            ) : (
-                userPosts.map((experience, index) => {
-                    return (
-                        <Link to={`/experience/${experience.id}`} key={index} >
-                            <div
-                                className="overflow-hidden border rounded-lg shadow-lg"
-                            >
-                                <h4 className="text-lg font-bold text-center text-ellipsis">{experience.title}</h4>
-                                <img className="w-auto h-auto max-w-full max-h-full" src={placeholderImage} alt="Placeholder" />
-                            </div>
-                        </Link>
-                    );
-                })
-            )}
+        <div className="max-h-[90vh] col-span-4 bg-white rounded-lg shadow sm:col-span-9">
+            <div className="grid max-h-full grid-cols-3 gap-4 px-8 py-6 overflow-y-auto">
+                {userPosts.length === 0 ? (
+                    <p>Nothing posted!</p>
+                ) : (
+                    userPosts.map((experience, index) => {
+                        return (
+                            <Link to={`/experience/${experience.id}`} key={index} >
+                                <div
+                                    className="overflow-hidden border rounded-lg shadow-lg"
+                                >
+                                    <h4 className="text-lg font-bold text-center text-ellipsis">{experience.title}</h4>
+                                    <img className="w-auto h-auto max-w-full max-h-full" src={placeholderImage} alt="Placeholder" />
+                                </div>
+                            </Link>
+                        );
+                    })
+                )}
+            </div>
         </div>
     );
 }

@@ -79,11 +79,9 @@ function Userpage() {
                         </div>
                     </div>
                     {/* Center POSTS */}
-                    <div className="max-h-[90vh] col-span-4 bg-white rounded-lg shadow sm:col-span-9">
-                            {selectedPage === "UserMyPosts" ? <UserMyPosts /> : null}
-                            {selectedPage === "UserFollowedPosts" ? <UserFollowedPosts /> : null}
-                            {selectedPage === "UserSettings" ? <UserSettings /> : null}
-                    </div>
+                    {selectedPage === "UserMyPosts" ? <UserMyPosts /> : null}
+                    {selectedPage === "UserFollowedPosts" ? <UserFollowedPosts /> : null}
+                    {selectedPage === "UserSettings" ? <UserSettings /> : null}
                     {/* MODAL */}
                     {isModalOpen && <UserExperiencePost onClose={handleCloseModal} />}
                 </div>
