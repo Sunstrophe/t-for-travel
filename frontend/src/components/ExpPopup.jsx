@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Link } from "react";
 import { Popup } from "react-leaflet";
-import placeholderImage from "../assets/placeholder-image.jpg";
+import placeholderImage from "../assets/placeholder_image.jpg";
 
 function ExpPopup({ experience }) {
     const [imageSrc, setImageSrc] = useState(null);
