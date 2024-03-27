@@ -43,3 +43,12 @@ def update_experience(db: Session, db_experience: models.Experience, updated_exp
     print("test")
     return db_experience
 
+def create_contact(db: Session, contact: schemas.ContactSchema):
+    db_contact = models.Contact(**contact.model_dump())
+    db.add(db_contact)
+    db.commit()
+    db.refresh(db_contact)
+    return db_contact
+
+def get_contact(db: Session, email: str):
+    return db.query(models.Contact).filter(models.Contact.email == email).first()

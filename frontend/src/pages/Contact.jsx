@@ -4,28 +4,28 @@ import { Link } from "react-router-dom";
 function Contact() {
   const [formErrors, setFormErrors] = useState([]);
   const [submitForm, setSubmitForm] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [country, setCountry] = useState("");
   const [termsOfAgreement, setTermsOfAgreement] = useState(false);
 
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [countryError, setCountryError] = useState("");
   const [termsError, setTermsError] = useState("");
 
-  function handleFirstName(e) {
-    setFirstName(e.target.value);
-    setFirstNameError("");
+  function handleTitle(e) {
+    setTitle(e.target.value);
+    setTitleError("");
   }
 
-  function handleLastName(e) {
-    setLastName(e.target.value);
-    setLastNameError("");
+  function handleName(e) {
+    setName(e.target.value);
+    setNameError("");
   }
 
   function handleEmail(e) {
@@ -45,13 +45,13 @@ function Contact() {
 
   function validateForm() {
     const errors = [];
-    if (!firstName) {
-      errors.push("First name is required");
-      setFirstNameError("First name is required");
+    if (!title) {
+      errors.push("Title is required");
+      setTitleError("Title is required");
     }
-    if (!lastName) {
-      errors.push("Last name is required");
-      setLastNameError("Last name is required");
+    if (!name) {
+      errors.push("Name is required");
+      setNameError("Name is required");
     }
     if (!email) {
       errors.push("Email is required");
@@ -67,10 +67,11 @@ function Contact() {
       errors.push("Description is required");
       setDescriptionError("Description is required");
     }
-    if (!country) {
-      errors.push("Country is required");
-      setCountryError("Country is required");
-    }
+    // Country is not mandatory
+    // if (!country) {
+    //   errors.push("Country is required");
+    //   setCountryError("Country is required");
+    // }
     if (!termsOfAgreement) {
       errors.push("You must agree to the terms");
       setTermsError("You must agree to the terms");
@@ -81,15 +82,57 @@ function Contact() {
     return errors.length === 0;
   }
 
-  function submitContactForm(e) {
+  async function submitContactForm(e) {
     e.preventDefault();
     const isValid = validateForm();
     if (isValid) {
-      // Submit form logic here
-      console.log("Form submitted successfully!");
-      setSubmitForm(true);
+      try {
+        const response = await fetch("http://localhost:8000/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            name,
+            email,
+            description,
+            country,
+          }),
+        });
+
+        const data = await response.json();
+
+        // Check response status
+        if (response.status === 201) {
+          console.log("Success");
+          setSubmitForm(true);
+
+          // Clear form fields after successful submission
+          setTitle("");
+          setName("");
+          setEmail("");
+          setDescription("");
+          setCountry("");
+          setTermsOfAgreement(false);
+          setTitleError("");
+          setNameError("");
+          setEmailError("");
+          setDescriptionError("");
+          setCountryError("");
+          setTermsError("");
+          
+        } else {
+          console.log("Something went wrong");
+          console.log("Error status:", response.status); // Log the response status
+          console.log("Error data:", data); // Log the error data
+          throw new Error("Error from the server");
+        }
+      } catch (error) {
+        console.log("Error caught:", error); // Log any caught errors
+      }
     } else {
-      console.log("Form has errors. Please fix them.");
+      console.log("Form has errors. Please revise your input.");
     }
   }
 
@@ -116,50 +159,50 @@ function Contact() {
               )}
 
               <div className="my-4">
-                <label htmlFor="firstName" className="block mr-2 text-gray-500">
-                  First name:
+                <label htmlFor="title" className="block mr-2 text-gray-500">
+                  Title:
                 </label>
                 <input
                   type="text"
                   className={`w-72 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 ${
-                    firstNameError && "ring-red-500"
+                    titleError && "ring-red-500"
                   } focus:ring-indigo-500`}
-                  name="firstName"
-                  placeholder="Enter your first name:"
-                  value={firstName}
-                  onChange={handleFirstName}
+                  name="title"
+                  placeholder="Enter your title:"
+                  value={title}
+                  onChange={handleTitle}
                   onBlur={() => {
-                    if (!firstName) {
-                      setFirstNameError("First name is required");
+                    if (!title) {
+                      setTitleError("Title is required");
                     }
                   }}
                 />
-                {firstNameError && (
-                  <p className="mt-2 text-sm text-red-600">{firstNameError}</p>
+                {titleError && (
+                  <p className="mt-2 text-sm text-red-600">{titleError}</p>
                 )}
               </div>
 
               <div className="my-4">
-                <label htmlFor="lastName" className="block mr-2 text-gray-500">
-                  Last name:
+                <label htmlFor="name" className="block mr-2 text-gray-500">
+                  Name:
                 </label>
                 <input
                   type="text"
                   className={`w-72 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 ${
-                    lastNameError && "ring-red-500"
+                    nameError && "ring-red-500"
                   } focus:ring-indigo-500`}
-                  name="lastName"
-                  placeholder="Enter your last name:"
-                  value={lastName}
-                  onChange={handleLastName}
+                  name="name"
+                  placeholder="Enter your name:"
+                  value={name}
+                  onChange={handleName}
                   onBlur={() => {
-                    if (!lastName) {
-                      setLastNameError("Last name is required");
+                    if (!name) {
+                      setNameError("Name is required");
                     }
                   }}
                 />
-                {lastNameError && (
-                  <p className="mt-2 text-sm text-red-600">{lastNameError}</p>
+                {nameError && (
+                  <p className="mt-2 text-sm text-red-600">{nameError}</p>
                 )}
               </div>
 
@@ -175,11 +218,6 @@ function Contact() {
                   } focus:ring-indigo-500`}
                   onChange={handleCountryOption}
                   value={country}
-                  onBlur={() => {
-                    if (!country) {
-                      setCountryError("Country is required");
-                    }
-                  }}
                 >
                   <option value="">Select a country</option>
                   <option value="denmark">Denmark</option>
@@ -270,7 +308,10 @@ function Contact() {
                 />
                 <label htmlFor="terms" className="text-gray-700">
                   I agree to the{" "}
-                  <Link to="/terms" className="rounded-lg underline hover:font-bold">
+                  <Link
+                    to="/terms"
+                    className="rounded-lg underline hover:font-bold"
+                  >
                     Terms and Conditions
                   </Link>
                 </label>
@@ -284,27 +325,31 @@ function Contact() {
                   type="submit"
                   className={`w-72 px-4 py-2 rounded-md focus:outline-none ${
                     formErrors.length === 0 &&
-                    firstName &&
-                    lastName &&
+                    title &&
+                    name &&
                     email &&
                     description &&
-                    country &&
                     termsOfAgreement
                       ? "bg-blue-500 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
                       : "bg-gray-400 text-gray-700 cursor-not-allowed"
                   }`}
                   disabled={
                     formErrors.length !== 0 ||
-                    !firstName ||
-                    !lastName ||
+                    !title ||
+                    !name ||
                     !email ||
                     !description ||
-                    !country ||
                     !termsOfAgreement
                   }
                 >
                   Submit
                 </button>
+                {/* Conditional rendering of success message */}
+                {submitForm && (
+                  <div className="mt-4 text-green-800">
+                    We will get back to you soon.
+                  </div>
+                )}
               </div>
             </div>
           </form>

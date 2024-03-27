@@ -10,7 +10,7 @@ import os
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete, insert
-from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema
+from app.schemas import TravelUserSchema, ExperienceSchema, ExperienceUpdateSchema, ContactSchema
 from app.prompting import call_for_location
 from app.auth_endpoints import router as auth_router
 
@@ -46,6 +46,7 @@ app.include_router(auth_router)
 user_router = APIRouter()
 experience_router = APIRouter()
 image_router = APIRouter()
+contact_router = APIRouter()
 
 
 # @user_router.post("/", status_code=201)
@@ -181,3 +182,24 @@ def get_location(search_prompt: str):
     except MaxTokenReachedException:
         raise HTTPException(
             status_code=400, detail="Please enter less number of characters.")
+
+############################################################
+# Contact
+############################################################
+    
+@contact_router.post("/", status_code=201)
+def create_contact(contact: ContactSchema, db: Session = Depends(get_db)):
+    try:
+        db_contact = crud.create_contact(db=db, contact=contact)
+        return db_contact
+    except IntegrityError:
+        raise HTTPException(
+            status_code=400, detail="Could not submit contact form.")
+
+@contact_router.get("/", status_code=200)
+def get_contacts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[ContactSchema]:
+    contacts = crud.get_contact(db=db, skip=skip, limit=limit)
+    return contacts
+
+app.include_router(contact_router, prefix="/contact",
+                   tags=["contact"])

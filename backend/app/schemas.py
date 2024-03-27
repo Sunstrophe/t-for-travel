@@ -105,6 +105,35 @@ class ExperienceUpdateSchema(BaseModel):
     is_positive: Optional[bool] = None
     is_public: Optional[bool] = None
 
+
+
+class ContactSchema(BaseModel):
+    title: str = Field(..., min_length=3, max_length=100,
+                       description="The overview title.")
+    
+    
+    name: str = Field(..., min_length=1, max_length=50,
+                            description="Name of user")
+    
+    country: str = Field(..., min_length=1, max_length=50,
+                            description="Country name")
+    description: str = Field(..., max_length=255,
+                             description="The description of the issue or suggestion.",
+                             )
+    email: EmailStr = Field(..., min_length=1, max_length=255,
+                            description="The email for the user")
+
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={
+            "example": {
+                "title": "Map suggestion",
+                "name": "Barbro Svensson",
+                "country": "Sweden",
+                "description": "Could the default be more zoomed in? That would make it easier to see at a glance",
+                "email": "bsvens@gmail.com"
+            }
+        })
+
     # country_id: Optional[int] = Field(
     #     None, description="id for which country it is in")
 
