@@ -16,6 +16,8 @@ function UserExperiencePost({ onClose }) {
     const [isPublic, setIsPublic] = useState(true);
     const [map, setMap] = useState(null);
     const [inputTouched, setInputTouched] = useState(false)
+    const [userData, setUserData] = useState(null)
+
     let newPost = {}
 
     const modalContentRef = useRef(null);
@@ -23,6 +25,10 @@ function UserExperiencePost({ onClose }) {
     useEffect(() => {
         adjustModalPosition();
     }, []);
+
+    useEffect(() => {
+        setUserData(localStorage.getItem("userData"))
+    }, [])
 
     const adjustModalPosition = () => {
         const contentHeight = modalContentRef.current.clientHeight;
@@ -181,9 +187,10 @@ function UserExperiencePost({ onClose }) {
             longitude: lng,
             is_positive: positiveExperience,
             is_public: isPublic,
+            user_id: userData.id
         };
         
-        const experience = await postExperience(newPost=newPost, imageName=imageName)
+        await postExperience(newPost=newPost, imageName=imageName)
         // console.log("experience: ", experience)
 
         // Reset our states
@@ -222,6 +229,7 @@ function UserExperiencePost({ onClose }) {
                 onDrop={handleDrop}
             >
                 <h2 className="mb-4 text-2xl font-bold">Create a New Post</h2>
+                <button onClick={() => {console.log(userData)}}>TEST</button>
                 {/* TITLE */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Title:</label>
