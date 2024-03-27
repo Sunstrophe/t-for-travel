@@ -105,7 +105,7 @@ function UserExperiencePost({ onClose }) {
     };
 
     const postExperience = async(newPost, imageName) => {
-        console.log("newPost: ", newPost)
+        // console.log("newPost: ", newPost)
         try {
             const response = await fetch("http://127.0.0.1:8000/experience", {
                 method: "POST",
@@ -138,9 +138,9 @@ function UserExperiencePost({ onClose }) {
             if (!response.ok) {
                 throw new Error(`Error posting image: ${response.status}`)
             }        
-            console.log("response: ", response)
+            // console.log("response: ", response)
             const data = await response.json()
-            console.log("data: ", data)
+            // console.log("data: ", data)
             return data["filename"]
         } catch (error) {
             console.error("Error uploading file", error);
@@ -148,7 +148,7 @@ function UserExperiencePost({ onClose }) {
     }
 
     const removeImage = async(imageName) => {
-        console.log("imageName: ", imageName)
+        // console.log("imageName: ", imageName)
         const url = `http://127.0.0.1:8000/image/?filename=${imageName}`
         const response = await fetch(url, {
             method: "DELETE",
@@ -163,7 +163,7 @@ function UserExperiencePost({ onClose }) {
         if (selectedImage !== null) {
             imageName = await postImage()
         }
-        console.log("imageName: ", imageName)
+        // console.log("imageName: ", imageName)
         
         if (map === null || isMapVisible === false) {
             var lat = null;
@@ -184,7 +184,7 @@ function UserExperiencePost({ onClose }) {
         };
         
         const experience = await postExperience(newPost=newPost, imageName=imageName)
-        console.log("experience: ", experience)
+        // console.log("experience: ", experience)
 
         // Reset our states
 
