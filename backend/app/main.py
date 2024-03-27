@@ -204,7 +204,8 @@ def get_location(search_prompt: str):
 ############################################################
 # Contact
 ############################################################
-    
+
+
 @contact_router.post("/", status_code=201)
 def create_contact(contact: ContactSchema, db: Session = Depends(get_db)):
     try:
@@ -214,10 +215,12 @@ def create_contact(contact: ContactSchema, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=400, detail="Could not submit contact form.")
 
+
 @contact_router.get("/", status_code=200)
 def get_contacts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[ContactSchema]:
     contacts = crud.get_contact(db=db, skip=skip, limit=limit)
     return contacts
+
 
 app.include_router(contact_router, prefix="/contact",
                    tags=["contact"])

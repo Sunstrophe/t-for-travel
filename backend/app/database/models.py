@@ -23,12 +23,11 @@ class TravelUser(Base):
         "country.id", ondelete="SET NULL"), nullable=True)
     is_public: Mapped[bool]
     is_banned: Mapped[bool]
-    experiences: Mapped[list["Experience"]] = relationship("Experience", back_populates="user")
+    experiences: Mapped[list["Experience"]] = relationship(
+        "Experience", back_populates="user")
 
     def __repr__(self) -> str:
         return f"<User={self.username}>"
-    
-
 
 
 class Country(Base):
@@ -52,8 +51,10 @@ class Experience(Base):
     longitude: Mapped[float] = mapped_column(nullable=True)
     is_positive: Mapped[bool]
     is_public: Mapped[bool]
-    user_id: Mapped[int] = mapped_column(ForeignKey("traveluser.id", ondelete="SET NULL"), nullable=True)
-    user: Mapped[TravelUser] = relationship(TravelUser, back_populates="experiences")
+    user_id: Mapped[int] = mapped_column(ForeignKey(
+        "traveluser.id", ondelete="SET NULL"), nullable=True)
+    user: Mapped[TravelUser] = relationship(
+        TravelUser, back_populates="experiences")
 
     def __repr__(self) -> str:
         return f"<Experience={self.title}>"
@@ -65,21 +66,8 @@ class Contact(Base):
     title: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(255))
     country: Mapped[str] = mapped_column(String(255))
-    description: Mapped[str] = mapped_column(String(2000), unique=True)
+    description: Mapped[str] = mapped_column(String(2000))
     email: Mapped[str]
-    
-    
+
     def __repr__(self) -> str:
         return f"<Contact={self.title}>"
-    
-# class ImageLink(Base):
-#     __tablename__ = "images"
-
-#     experience: Mapped[Experience] = relationship("Experience", back_populates="images")
-#     experience_id: Mapped[int] = mapped_column(ForeignKey(
-#         "experience.id", ondelete="SET NULL"), nullable=True)
-#     image_link: Mapped[str] = mapped_column(String(255))
-#     order: Mapped[int] = mapped_column(Integer, autoincrement=True)
-#     date_added: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-
-#     __table_args__ = (UniqueConstraint("experience_id", "order"), )

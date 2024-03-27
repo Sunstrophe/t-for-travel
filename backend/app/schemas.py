@@ -116,17 +116,15 @@ class ExperienceUpdateSchema(BaseModel):
     is_public: Optional[bool] = None
 
 
-
 class ContactSchema(BaseModel):
     title: str = Field(..., min_length=3, max_length=100,
                        description="The overview title.")
-    
-    
+
     name: str = Field(..., min_length=1, max_length=50,
-                            description="Name of user")
-    
+                      description="Name of user")
+
     country: str = Field(..., min_length=1, max_length=50,
-                            description="Country name")
+                         description="Country name")
     description: str = Field(..., max_length=255,
                              description="The description of the issue or suggestion.",
                              )
