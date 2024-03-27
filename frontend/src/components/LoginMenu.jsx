@@ -116,7 +116,7 @@ function LoginMenu() {
           />
         </svg>
       </button>
-
+      {/* LOGIN MENU */}
       {menuOpen && (
         <div className="absolute right-0 mt-4 bg-white rounded-md shadow-md top-full md:w-96">
           <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
@@ -174,7 +174,7 @@ function LoginMenu() {
                 className={`flex justify-center w-full px-4 py-2 text-sm font-medium text-white border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
                   loading || !email || !password
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-gray-800 hover:bg-indigo-700"
+                    : "bg-blue-500 hover:bg-indigo-700"
                 }`}
                 disabled={loading || !email || !password} // Disable if loading, email or password is empty
               >
