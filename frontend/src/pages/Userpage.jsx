@@ -47,9 +47,15 @@ function Userpage() {
         setSelectedPage("UserSettings");
     };
 
-    return (
+    return !userData ? (
+        <div className="min-h-screen">
+            <div className="container my-8 mx-auto bg-white rounded-lg shadow-lg h-[90vh] flex flex-col justify-center items-center">
+                <p className="text-4xl font-extrabold text-red-500">You are not logged in</p>
+            </div>
+        </div>
+    ) : (
         <div className="flex flex-col min-h-screen">
-            <div className="container py-8 mx-auto">
+            <div className="container py-8 mx-auto ">
                 <div className="grid grid-cols-4 gap-6 px-4 sm:grid-cols-12">
                     {/* LEFT SIDEBAR */}
                     <div className="col-span-4 sm:col-span-3">
@@ -79,7 +85,7 @@ function Userpage() {
                         </div>
                     </div>
                     {/* Center POSTS */}
-                    {selectedPage === "UserMyPosts" ? <UserMyPosts /> : null}
+                    {selectedPage === "UserMyPosts" ? <UserMyPosts userData={userData} /> : null}
                     {selectedPage === "UserFollowedPosts" ? <UserFollowedPosts /> : null}
                     {selectedPage === "UserSettings" ? <UserSettings /> : null}
                     {/* MODAL */}

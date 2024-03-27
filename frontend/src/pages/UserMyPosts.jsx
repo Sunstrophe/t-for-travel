@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import placeholderImage from "../assets/placeholder_image.jpg";
 import { Link } from "react-router-dom";
 
-function UserMyPosts() {
+function UserMyPosts({ userData }) {
     const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
@@ -11,7 +11,7 @@ function UserMyPosts() {
 
     const getUserPosts = async () => {
         // Url for user will be implemented in the future
-        const user_id = "1";
+        const user_id = userData.id;
         const url = `http://localhost:8000/user/${user_id}/experience`;
         const response = await fetch(url);
         const data = await response.json();
@@ -31,12 +31,14 @@ function UserMyPosts() {
                 ) : (
                     userPosts.map((experience, index) => {
                         return (
-                            <Link to={`/experience/${experience.id}`} key={index} >
-                                <div
-                                    className="overflow-hidden border rounded-lg shadow-lg"
-                                >
+                            <Link to={`/experience/${experience.id}`} key={index}>
+                                <div className="overflow-hidden border rounded-lg shadow-lg">
                                     <h4 className="text-lg font-bold text-center text-ellipsis">{experience.title}</h4>
-                                    <img className="w-auto h-auto max-w-full max-h-full" src={placeholderImage} alt="Placeholder" />
+                                    <img
+                                        className="w-auto h-auto max-w-full max-h-full"
+                                        src={placeholderImage}
+                                        alt="Placeholder"
+                                    />
                                 </div>
                             </Link>
                         );
