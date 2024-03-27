@@ -154,7 +154,8 @@ app.include_router(experience_router, prefix="/experience",
 ############################################################
 
 # Works with local directory eg. C:/User/{username}/Pictures/test/
-IMAGEDIR = "E:/test/"
+
+IMAGEDIR = os.getenv("IMAGEDIR")
 
 
 @image_router.post("/", status_code=201)

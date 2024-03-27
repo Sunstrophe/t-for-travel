@@ -279,12 +279,12 @@ function UserExperiencePost({ onClose, userData }) {
                     </div>
                     {isMapVisible && (
                         <div>
-                            <button
+                            {/* <button
                                 className="p-2 text-white bg-green-500 rounded-md hover:bg-green-600"
                                 onClick={handleMarkerPos}
                             >
                                 Marker pos
-                            </button>
+                            </button> */}
                             <MapContainer
                                 center={sthlmCenter}
                                 zoom={14}

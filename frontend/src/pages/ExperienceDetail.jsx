@@ -18,7 +18,7 @@ function ExperienceDetail() {
         const url = `http://localhost:8000/experience/${experience_id}`;
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setExperience(data);
         if (data.user_id) {
             getUsername(data.user_id);
@@ -47,18 +47,17 @@ function ExperienceDetail() {
             const response = await fetch(url, {
                 method: "GET",
             });
-            console.log(imageName);
+            // console.log(imageName);
             if (!response.ok) {
                 throw new Error("Failed to fetch image!");
             }
             const blob = await response.blob();
             const imageUrl = URL.createObjectURL(blob);
-            console.log(imageUrl);
+            // console.log(imageUrl);
 
             setImageUrl(imageUrl);
         } catch (error) {
             console.error("Error fetching image", error);
-            console.log(error);
             return null;
         }
     };

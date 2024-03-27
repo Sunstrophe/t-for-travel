@@ -38,3 +38,19 @@ Message:
 }
 CompletionUsage(completion_tokens=22, prompt_tokens=29, total_tokens=51)
 
+Created at 1711579780
+Message:
+{
+    "latitude": 59.3328,
+    "longitude": 18.0291
+}
+CompletionUsage(completion_tokens=22, prompt_tokens=31, total_tokens=53)
+
+Created at 1711579794
+Message:
+{
+    "latitude": 57.7089,
+    "longitude": 11.9746
+}
+CompletionUsage(completion_tokens=22, prompt_tokens=30, total_tokens=52)
+

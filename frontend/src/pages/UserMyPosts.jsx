@@ -35,13 +35,13 @@ function UserMyPosts({ userData, remountMyPosts }) {
             const response = await fetch(url, {
                 method: "GET",
             });
-            console.log(imageName);
+            // console.log(imageName);
             if (!response.ok) {
                 throw new Error("Failed to fetch image!");
             }
             const blob = await response.blob();
             const imageUrl = URL.createObjectURL(blob);
-            console.log(imageUrl);
+            // console.log(imageUrl);
 
             return imageUrl;
         } catch (error) {

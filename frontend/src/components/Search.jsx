@@ -20,7 +20,7 @@ function Search({ map }) {
             })
             .then((data) => {
                 // Handle successful response
-                console.log(data);
+                // console.log(data);
                 // console.log(data[0]["latitude"])
                 // console.log(data[0]["longitude"])
                 map.setView([data[0]["latitude"], data[0]["longitude"]], map.getZoom())
