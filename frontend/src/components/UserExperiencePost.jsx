@@ -224,7 +224,7 @@ function UserExperiencePost({ onClose, userData }) {
                 onDrop={handleDrop}
             >
                 <h2 className="mb-4 text-2xl font-bold">Create a New Post</h2>
-                <button onClick={() => {console.log(userData)}}>TEST</button>
+                {/* <button onClick={() => {console.log(userData)}}>TEST</button> */}
                 {/* TITLE */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Title:</label>
